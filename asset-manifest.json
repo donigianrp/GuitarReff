@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/GuitarReff/static/css/main.d1b05096.chunk.css",
+    "main.js": "/GuitarReff/static/js/main.bc01435f.chunk.js",
+    "main.js.map": "/GuitarReff/static/js/main.bc01435f.chunk.js.map",
+    "runtime-main.js": "/GuitarReff/static/js/runtime-main.2110ad2c.js",
+    "runtime-main.js.map": "/GuitarReff/static/js/runtime-main.2110ad2c.js.map",
+    "static/js/2.e41ecc3b.chunk.js": "/GuitarReff/static/js/2.e41ecc3b.chunk.js",
+    "static/js/2.e41ecc3b.chunk.js.map": "/GuitarReff/static/js/2.e41ecc3b.chunk.js.map",
+    "index.html": "/GuitarReff/index.html",
+    "precache-manifest.74743ba94a7a5eac751c69556b4baed5.js": "/GuitarReff/precache-manifest.74743ba94a7a5eac751c69556b4baed5.js",
+    "service-worker.js": "/GuitarReff/service-worker.js",
+    "static/css/main.d1b05096.chunk.css.map": "/GuitarReff/static/css/main.d1b05096.chunk.css.map",
+    "static/js/2.e41ecc3b.chunk.js.LICENSE": "/GuitarReff/static/js/2.e41ecc3b.chunk.js.LICENSE",
+    "static/media/logo.svg": "/GuitarReff/static/media/logo.5d5d9eef.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2110ad2c.js",
+    "static/js/2.e41ecc3b.chunk.js",
+    "static/css/main.d1b05096.chunk.css",
+    "static/js/main.bc01435f.chunk.js"
+  ]
+}
