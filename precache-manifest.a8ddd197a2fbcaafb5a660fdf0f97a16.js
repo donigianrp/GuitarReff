@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "50f46e5f26119488f7354108b24439f9",
+    "revision": "c1cd450d3def4a4013597928abe5ea13",
     "url": "/GuitarReff/index.html"
   },
   {
-    "revision": "423fb1825573cafa0ea8",
+    "revision": "9cde2ecf544d4aa50a90",
     "url": "/GuitarReff/static/css/main.d1b05096.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/GuitarReff/static/js/2.0b94f0db.chunk.js.LICENSE"
   },
   {
-    "revision": "423fb1825573cafa0ea8",
-    "url": "/GuitarReff/static/js/main.5dab30f4.chunk.js"
+    "revision": "9cde2ecf544d4aa50a90",
+    "url": "/GuitarReff/static/js/main.7458fafa.chunk.js"
   },
   {
     "revision": "f2bc203ae936f08465ce",
