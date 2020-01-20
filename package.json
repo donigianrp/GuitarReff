@@ -11,9 +11,11 @@
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
     "gh-pages": "^2.2.0",
+    "normalize.css": "^8.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "3.3.0",
+    "styled-components": "^5.0.0",
     "typescript": "^3.7.4"
   },
   "scripts": {
@@ -39,5 +41,8 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://guitarreff.com/"
+  "homepage": "https://guitarreff.com/",
+  "devDependencies": {
+    "@types/styled-components": "^4.4.2"
+  }
 }
