@@ -19,6 +19,13 @@ const MarkerWrapper = styled.div`
   align-items: center;
   height: 100%;
 `;
+const MultipleMarkerWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+  margin: 0 48px 0 48px;
+`;
 const Marker = styled.div`
   width: 10px;
   height: 10px;
@@ -35,14 +42,18 @@ const BoardSegment: FunctionComponent<Props> = (props: Props) => {
   const renderBoardMarkers = () => {
     let boardMarkersContainer: React.ReactElement[] = [];
     for (let i = 0; i < boardMarkers; i++) {
-      boardMarkersContainer.push(<Marker></Marker>);
+      boardMarkersContainer.push(<Marker key={i}></Marker>);
     }
     return boardMarkersContainer;
   };
 
   return (
     <Root>
-      <MarkerWrapper>{renderBoardMarkers()}</MarkerWrapper>
+      {boardMarkers === 2 ? (
+        <MultipleMarkerWrapper>{renderBoardMarkers()}</MultipleMarkerWrapper>
+      ) : (
+        <MarkerWrapper>{renderBoardMarkers()}</MarkerWrapper>
+      )}
     </Root>
   );
 };

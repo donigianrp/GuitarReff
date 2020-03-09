@@ -1,7 +1,12 @@
 import React, { FunctionComponent } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import FretBar from "./FretBar/FretBar";
+import { StateProps } from "../../../global";
+import { useTypedDispatch } from "../../../store";
+import { FretboardModel } from "../../../store/fretboard";
+import { RootState } from "../../../store/state";
 import BoardSegment from "./BoardSegment/BoardSegment";
+import FretBar from "./FretBar/FretBar";
 import Strings from "./Strings/Strings";
 
 const Wrapper = styled.div`
@@ -27,11 +32,30 @@ interface Props {
 
 const Fret: FunctionComponent<Props> = (props: Props) => {
   const { fretPosition, markerAmount } = props;
+  const { noteDisplay } = useSelector<StateProps>(state => state) as StateProps;
+
+  const { selectedNotes, boardDisplay } = useSelector<
+    RootState,
+    FretboardModel
+  >(state => state.fretboard);
+
+  const dispatch = useTypedDispatch();
+
   return (
     <Wrapper>
       <FretLabel>{fretPosition}</FretLabel>
       <FretComponentsWrapper>
-        <Strings />
+        <Strings fretboard={boardDisplay} fretPosition={fretPosition} />
+        {/* <GlobalStateConsumer>
+          {state =>
+            state && (
+              <Strings
+                fretboard={state.noteDisplay(selectedNotes[0])}
+                fretPosition={fretPosition}
+              />
+            )
+          }
+        </GlobalStateConsumer> */}
         <BoardSegment boardMarkers={markerAmount} />
         <FretBar />
       </FretComponentsWrapper>
