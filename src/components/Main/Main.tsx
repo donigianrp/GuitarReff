@@ -3,12 +3,12 @@ import styled from "styled-components";
 import Fretboard from "../Fretboard/Fretboard";
 
 const Root = styled.div`
-  width: 100%;
+  flex: 1;
   display: flex;
   justify-content: center;
 `;
 
-const Main: FunctionComponent = props => {
+const Main: FunctionComponent = (props) => {
   return (
     <Root>
       <Fretboard />

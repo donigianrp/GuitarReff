@@ -3,11 +3,13 @@ import styled from "styled-components";
 import Fret from "./Fret/Fret";
 
 const Root = styled.div`
-  height: 600px;
+  // height: 600px;
   width: 360px;
+  border: 2px solid #eee;
+  border-left: none;
 `;
 
-const Fretboard: FunctionComponent = props => {
+const Fretboard: FunctionComponent = (props) => {
   const renderFrets = () => {
     let fretContainer: React.ReactElement[] = [];
     for (let i = 0; i <= 22; i++) {

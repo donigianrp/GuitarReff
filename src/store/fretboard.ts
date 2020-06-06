@@ -1,63 +1,57 @@
 import {
-  handleActions,
-  createAction,
+  Action,
   ActionFunction1,
-  Action
+  createAction,
+  handleActions,
 } from "redux-actions";
-import { Note } from "../global";
-
-// Helper Functions
-export const fretboard = (tuning: Note[], size: number = 22) => {
-  const mapped = tuning.map(note => {
-    return [...orderNotesArr(note), ...orderNotesArr(note).slice(0, size - 11)];
-  });
-  return mapped;
-};
-
-const orderNotesArr = (startNote: Note) => {
-  const startIdx = notes.indexOf(startNote);
-  return [...notes.slice(startIdx), ...notes.slice(0, startIdx)];
-};
-
-export const notes: (Note | null)[] = [
-  "A",
-  "A#",
-  "B",
-  "C",
-  "C#",
-  "D",
-  "D#",
-  "E",
-  "F",
-  "F#",
-  "G",
-  "G#"
-];
+import {
+  BoardDisplay,
+  BoardDisplayNote,
+  Fretboard,
+  Note,
+  Scale,
+  Mode,
+} from "../global";
+import {
+  boardDisplay,
+  fretboard,
+  updateBoardDisplay,
+  scaleNotes,
+  modeNotes,
+  modeBoardDisplay,
+} from "./helpers";
+import { standardTuning } from "./static";
 
 // Model
 export interface FretboardModel {
-  boardDisplay: Note[][];
-  tuning: Note[];
-  selectedNotes: Note[][];
+  boardDisplay: BoardDisplay;
+  tuning: BoardDisplayNote[];
+  fretboard: Fretboard;
+  selectedNotes: Note[];
+  selectedScale: Scale | null;
+  selectedMode: Mode | null;
 }
 
 // Initial State
 const initialState: FretboardModel = {
-  boardDisplay: fretboard(["E", "A", "D", "G", "B", "E"]),
-  tuning: ["E", "A", "D", "G", "B", "E"],
-  selectedNotes: []
+  boardDisplay: boardDisplay(standardTuning),
+  tuning: standardTuning,
+  fretboard: fretboard(standardTuning),
+  selectedNotes: [],
+  selectedScale: null,
+  selectedMode: null,
 };
 
-// Actions
-export interface FretboardActions {
-  updateTuning: ActionFunction1<Note[], Action<Note[]>>;
-  updateSelectedNotes: ActionFunction1<Note[], Action<Note[]>>;
-}
+// // Actions
+// export interface FretboardActions {
+//   updateTuning: ActionFunction1<BoardDisplayNote[], Action<BoardDisplayNote[]>>;
+//   selectNote: ActionFunction1<Note, Action<Note>>;
+// }
 
-export const fretboardActions: FretboardActions = {
-  updateTuning: createAction<Note[]>("UPDATE_TUNING"),
-  updateSelectedNotes: createAction<Note[]>("UPDATE_SELECTED_NOTES")
-};
+// export const fretboardActions: FretboardActions = {
+//   updateTuning: createAction<BoardDisplayNote[]>("UPDATE_TUNING"),
+//   selectNote: createAction<Note>("SELECT_NOTE"),
+// };
 
 // Reducer
 interface Payload<T> {
@@ -67,53 +61,94 @@ interface Payload<T> {
 export type FretboardDispatchParam =
   | {
       type: "UPDATE_TUNING";
-      payload: Note[];
+      payload: BoardDisplayNote[];
     }
   | {
-      type: "UPDATE_SELECTED_NOTES";
-      payload: Note[][];
+      type: "SELECT_NOTE";
+      payload: Note;
+    }
+  | {
+      type: "SELECT_SCALE";
+      payload: Scale;
+    }
+  | {
+      type: "SELECT_MODE";
+      payload: Mode;
     };
 
 export const fretboardReducer = handleActions<FretboardModel, any>(
   {
-    UPDATE_TUNING: (state, action: Payload<Note[]>) => {
+    UPDATE_TUNING: (state, action: Payload<BoardDisplayNote[]>) => {
       if (action.payload) {
         return {
           ...state,
           tuning: action.payload,
-          boardDisplay: fretboard(action.payload)
+          boardDisplay: boardDisplay(action.payload),
         };
       }
       return state;
     },
-    UPDATE_SELECTED_NOTES: (state, action: Payload<Note[][]>) => {
-      if (action.payload) {
-        return { ...state, selectedNotes: action.payload };
+    SELECT_NOTE: (state, action: Payload<Note>) => {
+      if (action.payload && state.selectedNotes.includes(action.payload)) {
+        let updatedNotes: Note[] = state.selectedNotes.filter(
+          (note) => note !== action.payload
+        );
+
+        const updatedDisplay = updateBoardDisplay(
+          state.boardDisplay,
+          updatedNotes
+        );
+        return {
+          ...state,
+          selectedNotes: updatedNotes,
+          boardDisplay: updatedDisplay,
+        };
+      } else if (action.payload) {
+        const updatedDisplay = updateBoardDisplay(state.boardDisplay, [
+          ...state.selectedNotes,
+          action.payload,
+        ]);
+        // ADD IN FUNCTIONALITY TO REMOVE NOTE ON 2ND CLICK
+        return {
+          ...state,
+          selectedNotes: [...state.selectedNotes, action.payload],
+          boardDisplay: updatedDisplay,
+        };
       }
       return state;
-    }
+    },
+    SELECT_SCALE: (state, action: Payload<Scale>) => {
+      const updatedNotes: Note[] = scaleNotes(action.payload).map(
+        (detail) => detail.note
+      );
+      const updatedDisplay = updateBoardDisplay(
+        state.boardDisplay,
+        updatedNotes
+      );
+      if (action.payload) {
+        return {
+          ...state,
+          selectedNotes: updatedNotes,
+          selectedScale: action.payload,
+          boardDisplay: updatedDisplay,
+        };
+      } else {
+        return state;
+      }
+    },
+    SELECT_MODE: (state, action: Payload<Mode>) => {
+      console.log(modeBoardDisplay(state.boardDisplay, action.payload));
+
+      if (action.payload) {
+        return {
+          ...state,
+          selectedMode: action.payload,
+          boardDisplay: modeBoardDisplay(state.boardDisplay, action.payload),
+        };
+      } else {
+        return state;
+      }
+    },
   },
   initialState
 );
-
-/*board = [
-  [
-    { 
-      note: Note,
-      isSelected: boolean,
-      color: string,
-    }
-  ],
-  [],
-  [],
-  [],
-  [],
-  [],
-]
-
-tuning:  ["E", "A", "D", "G", "B", "E"],
-selectedNotes: ["A","C#", "E"],
-selectedScales: ["B major"],
-selectedModes: ["D ionian"],
-selectedChords: ["F#maj7"]
-*/

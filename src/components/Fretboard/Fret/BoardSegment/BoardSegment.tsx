@@ -1,16 +1,23 @@
 import React, { FunctionComponent } from "react";
 import styled from "styled-components";
 
+// Classic Style
+// const Root = styled.div`
+//   background: linear-gradient(
+//     90deg,
+//     rgba(102, 102, 102, 1) 0%,
+//     rgba(51, 51, 51, 1) 13%,
+//     rgba(51, 51, 51, 1) 87%,
+//     rgba(102, 102, 102, 1) 100%
+//   );
+//   width: 300px;
+//   height: 32px;
+// `;
+
+// Minimalist Style
 const Root = styled.div`
-  background: linear-gradient(
-    90deg,
-    rgba(102, 102, 102, 1) 0%,
-    rgba(51, 51, 51, 1) 13%,
-    rgba(51, 51, 51, 1) 87%,
-    rgba(102, 102, 102, 1) 100%
-  );
   width: 300px;
-  height: 40px;
+  height: 32px;
 `;
 
 const MarkerWrapper = styled.div`

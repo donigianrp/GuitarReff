@@ -1,6 +1,9 @@
 import React, { FunctionComponent } from "react";
 import styled from "styled-components";
-import { Note } from "../../../../global";
+import { BoardDisplayNote } from "../../../../global";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store/state";
+import { FretboardModel } from "../../../../store/fretboard";
 
 const Root = styled.div`
   display: flex;
@@ -9,12 +12,12 @@ const Root = styled.div`
   top: 0;
   left: 0;
   width: 300px;
-  height: 40px;
+  height: 32px;
 `;
 
 const String = styled.div`
-  height: 40px;
-  width: 1px;
+  height: 32px;
+  width: 2px;
   background-color: #ccc;
   display: flex;
   justify-content: center;
@@ -32,20 +35,31 @@ const NoteLabel = styled.div`
   align-items: center;
 `;
 interface Props {
-  fretboard: Note[][] | null;
+  fretboard: BoardDisplayNote[][];
   fretPosition: number;
 }
 
 const Strings: FunctionComponent<Props> = (props: Props) => {
   const { fretboard, fretPosition } = props;
-  const notes = fretboard?.map(string => {
+
+  const { boardDisplay } = useSelector<RootState, FretboardModel>(
+    (state) => state.fretboard
+  );
+
+  const notes = boardDisplay.map((string) => {
     return string[fretPosition];
   });
 
   return (
     <Root>
-      {notes?.map((note: Note | null, i: number) => {
-        return <String key={i}>{note && <NoteLabel>{note}</NoteLabel>}</String>;
+      {notes.map((noteDetails: BoardDisplayNote, i: number) => {
+        return (
+          <String key={i}>
+            {noteDetails.isSelected && (
+              <NoteLabel>{noteDetails.note}</NoteLabel>
+            )}
+          </String>
+        );
       })}
     </Root>
   );

@@ -1,12 +1,19 @@
-import React, { FunctionComponent, useContext } from "react";
+import React, { FunctionComponent, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { GlobalState, notes } from "../../context/GlobalState";
-import { Note, StateProps } from "../../global";
-import { useDispatch, useSelector } from "react-redux";
-import { InitialState, RootDispatcher } from "../../storeOld/root-reducer";
+import {
+  BoardDisplayNote,
+  Note,
+  Scale,
+  ScaleName,
+  ModeName,
+} from "../../global";
+import { useTypedDispatch } from "../../store";
+import { FretboardModel } from "../../store/fretboard";
+import { RootState } from "../../store/state";
+import { initialNotes, scales, modeMap } from "../../store/static";
 
 const Root = styled.div`
-  width: 200px;
   display: flex;
   justify-content: center;
   font-size: 1.5em;
@@ -28,54 +35,200 @@ const NoteStyle = styled.div`
 `;
 const HighlightedNoteStyle = styled.div`
   width: 60px;
-  background-color: #ddd;
-  color: #fff;
   border-radius: 5px;
   display: flex;
   justify-content: center;
   cursor: pointer;
 `;
 
-const Selector: FunctionComponent = props => {
-  // const { fretboard, selectedNote } = useContext(GlobalState);
-  // const dispatch = useDispatch();
-  // const rootDispatcher = new RootDispatcher(dispatch);
+const SectionWrapper = styled.div`
+  margin: 20px;
+`;
 
-  // const selectedNotes = useSelector<StateProps>(
-  //   state => state.selectedNotes
-  // ) as Note[];
+const ScaleNameStyle = styled.div`
+  margin: 10px 20px;
+  padding: 5px;
+  width: 200px;
+  border-radius: 5px;
+  cursor: pointer;
+`;
 
-  // const dispatchNote = (note: Note | null) => {
-  //   dispatch(rootDispatcher.updateSelectedNotes([note]));
-  // };
-  // const dispatchDisplay = (note: Note | null) => {
-  //   dispatch(rootDispatcher.updateNoteDisplay(note));
-  // };
+const Wrapper = styled.div`
+  display: flex;
+`;
+const ScaleSelectStyle = styled.select`
+  height: 30px;
+  width: 150px;
+  margin: 5px 10px;
+`;
+const NoteSelectStyle = styled.select`
+  height: 30px;
+  width: 100px;
+  margin: 5px 10px;
+`;
+const Button = styled.button`
+  cursor: pointer;
+  margin: 5px 10px;
+`;
+
+const Selector: FunctionComponent = (props) => {
+  const dispatch = useTypedDispatch();
+  const [selectedScaleNote, setSelectedScaleNote] = useState<Note | "">("");
+  const [selectedScale, setSelectedScale] = useState<ScaleName | "">("");
+  const [selectedModeNote, setSelectedModeNote] = useState<Note | "">("");
+  const [selectedMode, setSelectedMode] = useState<ModeName | "">("");
+  const { selectedNotes } = useSelector<RootState, FretboardModel>(
+    (state) => state.fretboard
+  );
+
   return (
     <Root>
-      {/* <div>
-        <div>Select Note:</div>
-        <div>
-          {notes.map((note: Note | null, i: number) => {
-            return (
-              <NoteWrapper key={i}>
-                {selectedNotes.includes(note) ? (
-                  <HighlightedNoteStyle>{note}</HighlightedNoteStyle>
-                ) : (
-                  <NoteStyle
-                    onClick={() => {
-                      dispatchDisplay(note);
-                      dispatchNote(note);
-                    }}
-                  >
-                    {note}
-                  </NoteStyle>
-                )}
-              </NoteWrapper>
-            );
-          })}
-        </div>
-        </div>  */}
+      <div>
+        <SectionWrapper>
+          <div>Select Mode:</div>
+          <Wrapper>
+            <ScaleSelectStyle
+              onChange={(e) => {
+                if (e.target.value) {
+                  setSelectedMode(e.target.value as ModeName);
+                }
+              }}
+            >
+              <option value="" label={"Select mode:"} />
+              {Object.keys(modeMap).map((modeName) => {
+                return (
+                  <option key={modeName} value={modeName}>
+                    {modeName}
+                  </option>
+                );
+              })}
+            </ScaleSelectStyle>
+            <NoteSelectStyle
+              onChange={(e) => {
+                if (e.target.value) {
+                  setSelectedModeNote(e.target.value as Note);
+                }
+              }}
+            >
+              <option value={""} label={"Select root:"}></option>
+
+              {initialNotes.map((noteDetails) => {
+                return (
+                  <option key={noteDetails.note} value={noteDetails.note}>
+                    {noteDetails.note}
+                  </option>
+                );
+              })}
+            </NoteSelectStyle>
+            <Button
+              disabled={!selectedMode || !selectedModeNote}
+              onClick={() => {
+                if (selectedMode && selectedModeNote) {
+                  const mode = {
+                    name: selectedMode,
+                    note: selectedModeNote,
+                  };
+                  dispatch({
+                    type: "SELECT_MODE",
+                    payload: mode,
+                  });
+                }
+              }}
+            >
+              Filter
+            </Button>
+          </Wrapper>
+        </SectionWrapper>
+        <SectionWrapper>
+          <div>Select Scale:</div>
+          <Wrapper>
+            <ScaleSelectStyle
+              onChange={(e) => {
+                if (e.target.value) {
+                  setSelectedScale(e.target.value as ScaleName);
+                }
+              }}
+            >
+              <option value="" label={"Select scale:"} />
+              {Object.keys(scales).map((scaleName) => {
+                return (
+                  <option key={scaleName} value={scaleName}>
+                    {scaleName}
+                  </option>
+                );
+              })}
+            </ScaleSelectStyle>
+            <NoteSelectStyle
+              onChange={(e) => {
+                if (e.target.value) {
+                  setSelectedScaleNote(e.target.value as Note);
+                }
+              }}
+            >
+              <option value={""} label={"Select root:"}></option>
+
+              {initialNotes.map((noteDetails) => {
+                return (
+                  <option key={noteDetails.note} value={noteDetails.note}>
+                    {noteDetails.note}
+                  </option>
+                );
+              })}
+            </NoteSelectStyle>
+            <Button
+              disabled={!selectedScale || !selectedScaleNote}
+              onClick={() => {
+                if (selectedScale && selectedScaleNote) {
+                  const scale = {
+                    name: selectedScale,
+                    note: selectedScaleNote,
+                  };
+                  dispatch({
+                    type: "SELECT_SCALE",
+                    payload: scale,
+                  });
+                }
+              }}
+            >
+              Filter
+            </Button>
+          </Wrapper>
+        </SectionWrapper>
+        <SectionWrapper>
+          <div>Select Note:</div>
+          <div>
+            {initialNotes.map((noteDetails: BoardDisplayNote, i: number) => {
+              return (
+                <NoteWrapper key={i}>
+                  {selectedNotes.includes(noteDetails.note) ? (
+                    <NoteStyle
+                      onClick={() => {
+                        dispatch({
+                          type: "SELECT_NOTE",
+                          payload: noteDetails.note,
+                        });
+                      }}
+                    >
+                      {noteDetails.note}
+                    </NoteStyle>
+                  ) : (
+                    <HighlightedNoteStyle
+                      onClick={() => {
+                        dispatch({
+                          type: "SELECT_NOTE",
+                          payload: noteDetails.note,
+                        });
+                      }}
+                    >
+                      {noteDetails.note}
+                    </HighlightedNoteStyle>
+                  )}
+                </NoteWrapper>
+              );
+            })}
+          </div>
+        </SectionWrapper>
+      </div>
     </Root>
   );
 };

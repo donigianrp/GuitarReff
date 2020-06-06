@@ -1,22 +1,20 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Main from "./components/Main/Main";
 import Selector from "./components/Selector/Selector";
-import { useSelector } from "react-redux";
-import { RootState } from "./store/state";
-import { FretboardModel } from "./store/fretboard";
 import { useTypedDispatch } from "./store";
-import { Note } from "./global";
+import { FretboardModel } from "./store/fretboard";
+import { RootState } from "./store/state";
+import { jimmyPageTuning, standardTuning } from "./store/static";
 
 const Root = styled.div`
-  background-color: #fff;
-  font: normal 14px sans-serif;
+  font: normal 14px Open Sans;
 `;
 const Title = styled.div`
   display: flex;
-  justify-content: center;
-  font-size: 3em;
-  margin: 20px 0;
+  font: normal 2em Varela Round;
+  padding: 20px;
 `;
 
 const Wrapper = styled.div`
@@ -24,20 +22,20 @@ const Wrapper = styled.div`
 `;
 
 const App: React.FC = () => {
-  const { tuning, selectedNotes, boardDisplay } = useSelector<
-    RootState,
-    FretboardModel
-  >(state => state.fretboard);
-
   const dispatch = useTypedDispatch();
+
+  const { tuning } = useSelector<RootState, FretboardModel>(
+    (state) => state.fretboard
+  );
+
   return (
     <Root>
-      <Title>Guitar Reff</Title>
+      <Title>GuitarReff</Title>
       <button
         onClick={() =>
           dispatch({
             type: "UPDATE_TUNING",
-            payload: ["E", "A", "D", "G", "B", "E"]
+            payload: standardTuning,
           })
         }
       >
@@ -47,15 +45,15 @@ const App: React.FC = () => {
         onClick={() =>
           dispatch({
             type: "UPDATE_TUNING",
-            payload: ["D", "A", "D", "G", "A", "D"]
+            payload: jimmyPageTuning,
           })
         }
       >
         Jimmy Page Tuning
       </button>
       <Wrapper>
-        {tuning.map((note, idx) => (
-          <div key={idx}>{note}</div>
+        {tuning.map((noteDetails, idx) => (
+          <div key={idx}>{noteDetails.note}</div>
         ))}
       </Wrapper>
       <Wrapper>

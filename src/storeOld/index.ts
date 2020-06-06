@@ -1,6 +1,6 @@
 import { createStore } from "redux";
-import { DispatchAction, InitialState, rootReducer } from "./root-reducer";
+// import { DispatchAction, InitialState, rootReducer } from "./root-reducer";
 
-export const store = createStore<InitialState, DispatchAction, null, null>(
-  rootReducer
-);
+// export const store = createStore<InitialState, DispatchAction, null, null>(
+//   rootReducer
+// );

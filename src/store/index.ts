@@ -11,7 +11,7 @@ type Dispatch = <TReturnType>(action: DispatchParams) => TReturnType;
 export const useTypedDispatch = () => useDispatch<Dispatch>();
 
 export const rootReducer = combineReducers<RootState>({
-  fretboard: fretboardReducer
+  fretboard: fretboardReducer,
 });
 export function configureStore(initialState?: RootState): Store<RootState> {
   let middleware = applyMiddleware(logger);

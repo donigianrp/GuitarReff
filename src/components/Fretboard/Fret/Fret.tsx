@@ -23,6 +23,7 @@ const FretLabel = styled.div`
 
 const FretComponentsWrapper = styled.div`
   position: relative;
+  border-left: 2px solid #eee;
 `;
 
 interface Props {
@@ -32,30 +33,20 @@ interface Props {
 
 const Fret: FunctionComponent<Props> = (props: Props) => {
   const { fretPosition, markerAmount } = props;
-  const { noteDisplay } = useSelector<StateProps>(state => state) as StateProps;
+  const { noteDisplay } = useSelector<StateProps>(
+    (state) => state
+  ) as StateProps;
 
-  const { selectedNotes, boardDisplay } = useSelector<
-    RootState,
-    FretboardModel
-  >(state => state.fretboard);
+  const { boardDisplay } = useSelector<RootState, FretboardModel>(
+    (state) => state.fretboard
+  );
 
   const dispatch = useTypedDispatch();
-
   return (
     <Wrapper>
       <FretLabel>{fretPosition}</FretLabel>
       <FretComponentsWrapper>
         <Strings fretboard={boardDisplay} fretPosition={fretPosition} />
-        {/* <GlobalStateConsumer>
-          {state =>
-            state && (
-              <Strings
-                fretboard={state.noteDisplay(selectedNotes[0])}
-                fretPosition={fretPosition}
-              />
-            )
-          }
-        </GlobalStateConsumer> */}
         <BoardSegment boardMarkers={markerAmount} />
         <FretBar />
       </FretComponentsWrapper>
