@@ -10,6 +10,8 @@ import { jimmyPageTuning, standardTuning } from "./store/static";
 
 const Root = styled.div`
   font: normal 14px Open Sans;
+  padding: 30px;
+  position: relative;
 `;
 const Title = styled.div`
   display: flex;
@@ -30,8 +32,8 @@ const App: React.FC = () => {
 
   return (
     <Root>
-      <Title>GuitarReff</Title>
-      <button
+      {/* <Title>GuitarReff</Title> */}
+      {/* <button
         onClick={() =>
           dispatch({
             type: "UPDATE_TUNING",
@@ -55,11 +57,11 @@ const App: React.FC = () => {
         {tuning.map((noteDetails, idx) => (
           <div key={idx}>{noteDetails.note}</div>
         ))}
-      </Wrapper>
-      <Wrapper>
+      </Wrapper> */}
+      <div>
         <Selector />
         <Main />
-      </Wrapper>
+      </div>
     </Root>
   );
 };

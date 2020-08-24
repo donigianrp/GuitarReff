@@ -12,45 +12,102 @@ import { useTypedDispatch } from "../../store";
 import { FretboardModel } from "../../store/fretboard";
 import { RootState } from "../../store/state";
 import { initialNotes, scales, modeMap } from "../../store/static";
+import Dial from "./Dial/Dial";
 
 const Root = styled.div`
-  display: flex;
-  justify-content: center;
+  // display: flex;
+  // justify-content: center;
   font-size: 1.5em;
+  // padding: 100px;
+  width: 1200px;
 `;
 const NoteWrapper = styled.div`
   width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+`;
+const NoteContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+const Indicator = styled.div`
+  height: 12px;
+  width: 12px;
+  border-radius: 12px;
+  background: radial-gradient(#f99f9f 99%, #ffafaf);
+`;
+const HighlightedIndicator = styled.div`
+  height: 12px;
+  width: 12px;
+  border-radius: 12px;
+  background: radial-gradient(#ce0000 30%, #ffafaf);
+  box-shadow: 0 0 10px #ce0000;
+`;
+const NotesWrapper = styled.div`
+  width: 100%;
+  height: 100px;
+
   margin: 20px 0;
   display: flex;
   justify-content: center;
 `;
 const NoteStyle = styled.div`
+  width: 56px;
+  height: 56px;
+  margin-top: 2px;
+  background: linear-gradient(315deg, #222 1%, #ccc);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+const NoteStyleBorder = styled.div`
   width: 60px;
-  background-color: #aaa;
-  color: #fff;
+  height: 60px;
+  background: linear-gradient(135deg, #444 990%, #ccc);
   border-radius: 5px;
   display: flex;
   justify-content: center;
   cursor: pointer;
+  margin: 10px;
+  -webkit-box-shadow: 0px 5px 0px #aaa;
+  -moz-box-shadow: 0px 5px 0px #aaa;
+  -ms-box-shadow: 0px 5px 0px #aaa;
+  -o-box-shadow: 0px 5px 0px #aaa;
+  box-shadow: 0.5px 2px 0px #aaa;
+  transition: all 0.1s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 0 0;
+    margin: 12px 10px 10px 10px;
+  }
+`;
+
+const NoteGradient = styled.div`
+  color: #fff;
+  // background: linear-gradient(to bottom, #eee 50%, #333);
+  // -webkit-background-clip: text;
+  // -webkit-text-fill-color: transparent;
 `;
 const HighlightedNoteStyle = styled.div`
   width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #444 990%, #ccc);
   border-radius: 5px;
   display: flex;
   justify-content: center;
   cursor: pointer;
+  margin: 12px 10px 10px 10px;
+  box-shadow: 0;
 `;
 
 const SectionWrapper = styled.div`
   margin: 20px;
-`;
-
-const ScaleNameStyle = styled.div`
-  margin: 10px 20px;
-  padding: 5px;
-  width: 200px;
-  border-radius: 5px;
-  cursor: pointer;
 `;
 
 const Wrapper = styled.div`
@@ -83,8 +140,54 @@ const Selector: FunctionComponent = (props) => {
 
   return (
     <Root>
+      <Wrapper>
+        <Dial type={"scales"} />
+        <Dial type={"modes"} />
+      </Wrapper>
       <div>
-        <SectionWrapper>
+        <Wrapper>
+          <SectionWrapper>
+            <div>Mode Note</div>
+            <NoteSelectStyle
+              onChange={(e) => {
+                if (e.target.value) {
+                  setSelectedModeNote(e.target.value as Note);
+                }
+              }}
+            >
+              <option value={""} label={"Select root:"}></option>
+
+              {initialNotes.map((noteDetails) => {
+                return (
+                  <option key={noteDetails.note} value={noteDetails.note}>
+                    {noteDetails.note}
+                  </option>
+                );
+              })}
+            </NoteSelectStyle>
+          </SectionWrapper>
+          <SectionWrapper>
+            <div>Scale Note</div>
+            <NoteSelectStyle
+              onChange={(e) => {
+                if (e.target.value) {
+                  setSelectedScaleNote(e.target.value as Note);
+                }
+              }}
+            >
+              <option value={""} label={"Select root:"}></option>
+
+              {initialNotes.map((noteDetails) => {
+                return (
+                  <option key={noteDetails.note} value={noteDetails.note}>
+                    {noteDetails.note}
+                  </option>
+                );
+              })}
+            </NoteSelectStyle>
+          </SectionWrapper>
+        </Wrapper>
+        {/* <SectionWrapper>
           <div>Select Mode:</div>
           <Wrapper>
             <ScaleSelectStyle
@@ -193,40 +296,54 @@ const Selector: FunctionComponent = (props) => {
               Filter
             </Button>
           </Wrapper>
-        </SectionWrapper>
+        </SectionWrapper> */}
         <SectionWrapper>
-          <div>Select Note:</div>
-          <div>
-            {initialNotes.map((noteDetails: BoardDisplayNote, i: number) => {
+          {/* <div>Select Note:</div> */}
+          {/* <NotesWrapper>
+            {initialNotes.map((noteDetails: BoardDisplayNote) => {
               return (
-                <NoteWrapper key={i}>
+                <NoteContainer key={noteDetails.note}>
                   {selectedNotes.includes(noteDetails.note) ? (
-                    <NoteStyle
-                      onClick={() => {
-                        dispatch({
-                          type: "SELECT_NOTE",
-                          payload: noteDetails.note,
-                        });
-                      }}
-                    >
-                      {noteDetails.note}
-                    </NoteStyle>
+                    <>
+                      <HighlightedIndicator />
+                      <NoteWrapper>
+                        <HighlightedNoteStyle>
+                          <NoteStyle
+                            onClick={() => {
+                              dispatch({
+                                type: "SELECT_NOTE",
+                                payload: noteDetails.note,
+                              });
+                            }}
+                          >
+                            <NoteGradient>{noteDetails.note}</NoteGradient>
+                          </NoteStyle>
+                        </HighlightedNoteStyle>
+                      </NoteWrapper>
+                    </>
                   ) : (
-                    <HighlightedNoteStyle
-                      onClick={() => {
-                        dispatch({
-                          type: "SELECT_NOTE",
-                          payload: noteDetails.note,
-                        });
-                      }}
-                    >
-                      {noteDetails.note}
-                    </HighlightedNoteStyle>
+                    <>
+                      <Indicator />
+                      <NoteWrapper>
+                        <NoteStyleBorder>
+                          <NoteStyle
+                            onClick={() => {
+                              dispatch({
+                                type: "SELECT_NOTE",
+                                payload: noteDetails.note,
+                              });
+                            }}
+                          >
+                            <NoteGradient>{noteDetails.note}</NoteGradient>
+                          </NoteStyle>
+                        </NoteStyleBorder>
+                      </NoteWrapper>
+                    </>
                   )}
-                </NoteWrapper>
+                </NoteContainer>
               );
             })}
-          </div>
+          </NotesWrapper> */}
         </SectionWrapper>
       </div>
     </Root>

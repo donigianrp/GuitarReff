@@ -6,33 +6,35 @@ import { RootState } from "../../../../store/state";
 import { FretboardModel } from "../../../../store/fretboard";
 
 const Root = styled.div`
+  width: 100%;
+  height: 300px;
+  border-bottom: 2px solid #ccc;
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 300px;
-  height: 32px;
 `;
+// align-items: center;
 
 const String = styled.div`
-  height: 32px;
-  width: 2px;
+  height: 2px;
+  width: 55px;
   background-color: #ccc;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
 `;
 
 const NoteLabel = styled.div`
-  background-color: #c70039;
-  min-height: 25px;
-  min-width: 25px;
-  color: #fff;
+  background-color: #ccc;
+  width: 25px;
+  height: 25px;
+  color: #333;
   border-radius: 25px;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
+  left: 15px;
+  top: -12.5px;
+  font-weight: 600;
 `;
 interface Props {
   fretboard: BoardDisplayNote[][];
@@ -40,15 +42,16 @@ interface Props {
 }
 
 const Strings: FunctionComponent<Props> = (props: Props) => {
-  const { fretboard, fretPosition } = props;
+  const { fretPosition } = props;
 
   const { boardDisplay } = useSelector<RootState, FretboardModel>(
     (state) => state.fretboard
   );
 
-  const notes = boardDisplay.map((string) => {
-    return string[fretPosition];
-  });
+  let notes = [];
+  for (let i = 5; i >= 0; i--) {
+    notes.push(boardDisplay[i][fretPosition]);
+  }
 
   return (
     <Root>

@@ -3,14 +3,13 @@ import styled from "styled-components";
 import Fret from "./Fret/Fret";
 
 const Root = styled.div`
-  // height: 600px;
-  width: 360px;
-  border: 2px solid #eee;
+  width: 100%;
   border-left: none;
+  display: flex;
 `;
 
 const Fretboard: FunctionComponent = (props) => {
-  const renderFrets = () => {
+  const renderFrets = (() => {
     let fretContainer: React.ReactElement[] = [];
     for (let i = 0; i <= 22; i++) {
       if ([3, 5, 7, 9, 15, 17, 19, 21].includes(i)) {
@@ -22,10 +21,10 @@ const Fretboard: FunctionComponent = (props) => {
       }
     }
     return fretContainer;
-  };
+  })();
   return (
     <div>
-      <Root>{renderFrets()}</Root>
+      <Root>{renderFrets}</Root>
     </div>
   );
 };

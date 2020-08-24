@@ -1,43 +1,39 @@
 import React, { FunctionComponent } from "react";
 import styled from "styled-components";
 
-// Classic Style
-// const Root = styled.div`
-//   background: linear-gradient(
-//     90deg,
-//     rgba(102, 102, 102, 1) 0%,
-//     rgba(51, 51, 51, 1) 13%,
-//     rgba(51, 51, 51, 1) 87%,
-//     rgba(102, 102, 102, 1) 100%
-//   );
-//   width: 300px;
-//   height: 32px;
-// `;
-
-// Minimalist Style
 const Root = styled.div`
-  width: 300px;
-  height: 32px;
+  width: 100%;
 `;
 
 const MarkerWrapper = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 100%;
+  position: absolute;
+  top: 145px;
+  left: 22.5px;
 `;
-const MultipleMarkerWrapper = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 100%;
-  margin: 0 48px 0 48px;
-`;
+
 const Marker = styled.div`
   width: 10px;
   height: 10px;
   background-color: #daa520;
   border-radius: 30px;
+`;
+const MarkerTop = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: #daa520;
+  border-radius: 30px;
+  position: absolute;
+  top: 94px;
+  left: 22.5px;
+`;
+const MarkerBottom = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: #daa520;
+  border-radius: 30px;
+  position: absolute;
+  top: 196px;
+  left: 22.5px;
 `;
 
 interface Props {
@@ -46,20 +42,19 @@ interface Props {
 
 const BoardSegment: FunctionComponent<Props> = (props: Props) => {
   const { boardMarkers } = props;
-  const renderBoardMarkers = () => {
-    let boardMarkersContainer: React.ReactElement[] = [];
-    for (let i = 0; i < boardMarkers; i++) {
-      boardMarkersContainer.push(<Marker key={i}></Marker>);
-    }
-    return boardMarkersContainer;
-  };
 
   return (
     <Root>
-      {boardMarkers === 2 ? (
-        <MultipleMarkerWrapper>{renderBoardMarkers()}</MultipleMarkerWrapper>
-      ) : (
-        <MarkerWrapper>{renderBoardMarkers()}</MarkerWrapper>
+      {boardMarkers === 2 && (
+        <div>
+          <MarkerTop />
+          <MarkerBottom />
+        </div>
+      )}
+      {boardMarkers === 1 && (
+        <MarkerWrapper>
+          <Marker />
+        </MarkerWrapper>
       )}
     </Root>
   );

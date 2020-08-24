@@ -89,12 +89,12 @@ export const jimmyPageTuning: BoardDisplayNote[] = [
     highlight: [],
   },
   {
-    note: "D",
+    note: "G",
     isSelected: false,
     highlight: [],
   },
   {
-    note: "G",
+    note: "D",
     isSelected: false,
     highlight: [],
   },

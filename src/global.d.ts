@@ -85,3 +85,11 @@ export interface StateProps {
   fretboard: Note[][] | null;
   noteDisplay: Note[][] | null;
 }
+
+// ******************UI Components*********************
+
+export interface DialOption<T> {
+  label: T;
+  bottom: number;
+  left: number;
+}

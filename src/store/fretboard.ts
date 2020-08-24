@@ -1,24 +1,18 @@
-import {
-  Action,
-  ActionFunction1,
-  createAction,
-  handleActions,
-} from "redux-actions";
+import { handleActions } from "redux-actions";
 import {
   BoardDisplay,
   BoardDisplayNote,
   Fretboard,
+  Mode,
   Note,
   Scale,
-  Mode,
 } from "../global";
 import {
   boardDisplay,
   fretboard,
-  updateBoardDisplay,
-  scaleNotes,
-  modeNotes,
   modeBoardDisplay,
+  scaleNotes,
+  updateBoardDisplay,
 } from "./helpers";
 import { standardTuning } from "./static";
 
