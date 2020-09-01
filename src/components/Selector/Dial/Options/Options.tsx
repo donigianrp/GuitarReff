@@ -123,6 +123,16 @@ const Scales: FunctionComponent<OptProps> = React.memo((props: OptProps) => {
       });
     }
   }, [selectedScale]);
+
+  useEffect(() => {
+    if (angle >= min(0) || angle <= max(0)) {
+      setSelectedScale("");
+      dispatch({
+        type: "SELECT_SCALE",
+        payload: null,
+      });
+    }
+  }, [angle]);
   return (
     <>
       {scales.map((opt: DialOption<ScaleName>, idx: number) => {
@@ -131,12 +141,8 @@ const Scales: FunctionComponent<OptProps> = React.memo((props: OptProps) => {
           angle <= max(idx + 1) &&
           opt.label !== selectedScale
         ) {
-          // console.log(opt.label);
           setSelectedScale(opt.label);
         }
-        // else if (angle >= min(0) || angle <= max(0)) {
-        //   setSelectedScale("");
-        // }
 
         return (
           <>

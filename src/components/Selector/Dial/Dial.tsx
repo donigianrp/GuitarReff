@@ -1,6 +1,8 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Options from "./Options/Options";
+import { useThrottle } from "../../../hooks/useThrottle";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const Root = styled.div`
   display: flex;
@@ -62,9 +64,9 @@ const MarkerGrab = styled.div`
   bottom: 0px;
   left: 68px;
   background: radial-gradient(#fff 2%, #444);
-  height: 40px;
-  width: 40px;
-  border-radius: 20px;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
   cursor: grab;
   display: flex;
   justify-content: center;
@@ -95,6 +97,9 @@ const Dial: FunctionComponent<Props> = (props: Props) => {
   const [selected, setSelected] = useState(false);
   const [grabbed, setGrabbed] = useState(false);
   const [angle, setAngle] = useState(0);
+  const throttledAngle = useThrottle(angle, 200);
+  const debouncedAngle = useDebounce(angle, 50);
+
   const dialRef = useRef<HTMLDivElement>(null);
   const [pivot, setPivot] = useState<Coordinates>({
     x: 0,
@@ -130,8 +135,9 @@ const Dial: FunctionComponent<Props> = (props: Props) => {
               setSelected(true);
             }}
             onMouseLeave={() => {
+              // console.log("leave");
               setSelected(false);
-              setGrabbed(false);
+              // setGrabbed(false);
             }}
             onMouseMove={(e) => {
               if (!grabbed) {
@@ -163,6 +169,9 @@ const Dial: FunctionComponent<Props> = (props: Props) => {
               onMouseUp={(e) => {
                 setGrabbed(false);
               }}
+              onMouseLeave={() => {
+                setGrabbed(false);
+              }}
             >
               <Marker />
             </MarkerGrab>
@@ -174,7 +183,7 @@ const Dial: FunctionComponent<Props> = (props: Props) => {
 
   return (
     <Root>
-      <Options type={type} angle={angle}>
+      <Options type={type} angle={debouncedAngle}>
         {selected ? (
           <OutlineHighlight>{renderDial}</OutlineHighlight>
         ) : (

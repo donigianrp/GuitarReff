@@ -63,7 +63,7 @@ export type FretboardDispatchParam =
     }
   | {
       type: "SELECT_SCALE";
-      payload: Scale;
+      payload: Scale | null;
     }
   | {
       type: "SELECT_MODE";
@@ -111,15 +111,15 @@ export const fretboardReducer = handleActions<FretboardModel, any>(
       }
       return state;
     },
-    SELECT_SCALE: (state, action: Payload<Scale>) => {
-      const updatedNotes: Note[] = scaleNotes(action.payload).map(
-        (detail) => detail.note
-      );
-      const updatedDisplay = updateBoardDisplay(
-        state.boardDisplay,
-        updatedNotes
-      );
+    SELECT_SCALE: (state, action: Payload<Scale | null>) => {
       if (action.payload) {
+        const updatedNotes: Note[] = scaleNotes(action.payload).map(
+          (detail) => detail.note
+        );
+        const updatedDisplay = updateBoardDisplay(
+          state.boardDisplay,
+          updatedNotes
+        );
         return {
           ...state,
           selectedNotes: updatedNotes,
@@ -127,7 +127,12 @@ export const fretboardReducer = handleActions<FretboardModel, any>(
           boardDisplay: updatedDisplay,
         };
       } else {
-        return state;
+        return {
+          ...state,
+          selectedNotes: [],
+          selectedScale: null,
+          boardDisplay: boardDisplay(standardTuning),
+        };
       }
     },
     SELECT_MODE: (state, action: Payload<Mode>) => {
