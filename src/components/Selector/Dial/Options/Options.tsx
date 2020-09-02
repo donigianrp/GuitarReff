@@ -1,8 +1,16 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { DialOption, ScaleName, ModeName, Note } from "../../../../global";
+import {
+  DialOption,
+  ScaleName,
+  ModeName,
+  Note,
+  Mode,
+} from "../../../../global";
 import { useTypedDispatch } from "../../../../store";
+import { RootState } from "../../../../store/state";
+import { FretboardModel } from "../../../../store/fretboard";
 
 const Root = styled.div`
   display: flex;
@@ -105,12 +113,24 @@ interface OptProps {
   angle: number;
   min: (idx: number) => number;
   max: (idx: number) => number;
+  selectedScale: ScaleName | "";
+  setSelectedScale: (val: ScaleName | "") => void;
+  selectedMode: ModeName | "";
+  setSelectedMode: (val: ModeName | "") => void;
+  disabled?: boolean;
 }
 
 const Scales: FunctionComponent<OptProps> = React.memo((props: OptProps) => {
-  const { angle, min, max } = props;
+  const {
+    angle,
+    min,
+    max,
+    selectedScale,
+    setSelectedScale,
+    selectedMode,
+    setSelectedMode,
+  } = props;
   const dispatch = useTypedDispatch();
-  const [selectedScale, setSelectedScale] = useState<ScaleName | "">("");
   useEffect(() => {
     if (selectedScale) {
       const scale = {
@@ -167,10 +187,47 @@ const Scales: FunctionComponent<OptProps> = React.memo((props: OptProps) => {
   );
 });
 const Modes: FunctionComponent<OptProps> = React.memo((props: OptProps) => {
-  const { angle, min, max } = props;
+  const { angle, min, max, selectedMode, setSelectedMode, disabled } = props;
+  const dispatch = useTypedDispatch();
+  const { selectedScale } = useSelector<RootState, FretboardModel>(
+    (state) => state.fretboard
+  );
+  // const [selectedMode, setSelectedMode] = useState<ModeName | "">("");
+  useEffect(() => {
+    if (selectedMode && selectedScale) {
+      const mode: Mode = {
+        name: selectedMode,
+        note: "A" as Note,
+        scale: selectedScale.name,
+      };
+      dispatch({
+        type: "SELECT_MODE",
+        payload: mode,
+      });
+    }
+  }, [selectedMode, selectedScale]);
+
+  useEffect(() => {
+    if (angle >= min(0) || angle <= max(0)) {
+      setSelectedMode("");
+      dispatch({
+        type: "SELECT_SCALE",
+        payload: selectedScale,
+      });
+    }
+  }, [angle]);
+
+  // console.log(selectedMode, selectedScale);
   return (
     <>
       {modes.map((opt: DialOption<ModeName>, idx: number) => {
+        if (
+          angle >= min(idx + 1) &&
+          angle <= max(idx + 1) &&
+          opt.label !== selectedMode
+        ) {
+          setSelectedMode(opt.label);
+        }
         return (
           <>
             <Option
@@ -198,9 +255,13 @@ interface Props {
   children?: any;
   type: "scales" | "modes";
   angle: number;
+  scale?: ScaleName | "";
+  mode?: ModeName | "";
 }
 const Options: FunctionComponent<Props> = (props: Props) => {
   const { children, type, angle } = props;
+  const [selectedMode, setSelectedMode] = useState<ModeName | "">("");
+  const [selectedScale, setSelectedScale] = useState<ScaleName | "">("");
 
   const increment =
     type === "scales" ? 360 / (scales.length + 1) : 360 / (modes.length + 1);
@@ -209,13 +270,31 @@ const Options: FunctionComponent<Props> = (props: Props) => {
     return idx === 0 ? 360 - half : idx * increment - half;
   };
   const max = (idx: number) => idx * increment + half;
+  console.log("scale", selectedScale);
 
   return (
     <Root>
       {type === "scales" ? (
-        <Scales angle={angle} min={min} max={max} />
+        <Scales
+          angle={angle}
+          min={min}
+          max={max}
+          selectedMode={selectedMode}
+          setSelectedMode={setSelectedMode}
+          selectedScale={selectedScale}
+          setSelectedScale={setSelectedScale}
+        />
       ) : (
-        <Modes angle={angle} min={min} max={max} />
+        <Modes
+          angle={angle}
+          min={min}
+          max={max}
+          selectedMode={selectedMode}
+          setSelectedMode={setSelectedMode}
+          selectedScale={selectedScale}
+          setSelectedScale={setSelectedScale}
+          disabled={!!selectedScale}
+        />
       )}
       {children}
     </Root>

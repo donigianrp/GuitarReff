@@ -67,7 +67,7 @@ export type FretboardDispatchParam =
     }
   | {
       type: "SELECT_MODE";
-      payload: Mode;
+      payload: Mode | null;
     };
 
 export const fretboardReducer = handleActions<FretboardModel, any>(
@@ -135,8 +135,8 @@ export const fretboardReducer = handleActions<FretboardModel, any>(
         };
       }
     },
-    SELECT_MODE: (state, action: Payload<Mode>) => {
-      console.log(modeBoardDisplay(state.boardDisplay, action.payload));
+    SELECT_MODE: (state, action: Payload<Mode | null>) => {
+      // console.log(modeBoardDisplay(state.boardDisplay, action.payload));
 
       if (action.payload) {
         return {
@@ -145,7 +145,11 @@ export const fretboardReducer = handleActions<FretboardModel, any>(
           boardDisplay: modeBoardDisplay(state.boardDisplay, action.payload),
         };
       } else {
-        return state;
+        return {
+          ...state,
+          selectedMode: null,
+          boardDisplay: boardDisplay(standardTuning),
+        };
       }
     },
   },

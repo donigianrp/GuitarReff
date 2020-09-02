@@ -62,7 +62,7 @@ const MarkerContainer = styled.div.attrs((props: { angle: number }) => ({
 const MarkerGrab = styled.div`
   position: absolute;
   bottom: 0px;
-  left: 68px;
+  left: 63px;
   background: radial-gradient(#fff 2%, #444);
   height: 50px;
   width: 50px;
@@ -135,9 +135,7 @@ const Dial: FunctionComponent<Props> = (props: Props) => {
               setSelected(true);
             }}
             onMouseLeave={() => {
-              // console.log("leave");
               setSelected(false);
-              // setGrabbed(false);
             }}
             onMouseMove={(e) => {
               if (!grabbed) {

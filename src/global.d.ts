@@ -23,6 +23,7 @@ export type ModeName =
   | "Locrian";
 
 export interface Mode {
+  scale: ScaleName;
   name: ModeName;
   note: Note;
 }

@@ -7,6 +7,7 @@ import {
   Scale,
   Mode,
   BoardDisplayString,
+  ScaleName,
 } from "../global";
 import { initialNotes, modeMap } from "./static";
 import { scales } from "./static";
@@ -77,8 +78,9 @@ export const scaleNotes = (scale: Scale): BoardDisplayNote[] => {
 };
 
 export const modeNotes = (mode: Mode): BoardDisplayNote[] => {
+  console.log(mode);
   const orderedNotes = scaleNotes({
-    name: "Natural Major",
+    name: mode.scale,
     note: mode.note,
   });
   let modeOrdered: BoardDisplayNote[] = [];
