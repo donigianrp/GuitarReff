@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Options from "./Options/Options";
 import { useThrottle } from "../../../hooks/useThrottle";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { ScaleName, ModeName, Note } from "../../../global";
 
 const Root = styled.div`
   display: flex;
@@ -62,16 +63,16 @@ const MarkerContainer = styled.div.attrs((props: { angle: number }) => ({
 const MarkerGrab = styled.div`
   position: absolute;
   bottom: 0px;
-  left: 63px;
+  left: 48px;
   background: radial-gradient(#fff 2%, #444);
-  height: 50px;
-  width: 50px;
-  border-radius: 25px;
+  height: 80px;
+  width: 80px;
+  border-radius: 40px;
   cursor: grab;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 `;
 
 const Marker = styled.div`
@@ -84,6 +85,12 @@ const Marker = styled.div`
 
 interface Props {
   type: "scales" | "modes";
+  selectedScale: ScaleName | "";
+  setSelectedScale: (val: ScaleName | "") => void;
+  selectedMode: ModeName | "";
+  setSelectedMode: (val: ModeName | "") => void;
+  selectedNote: Note | "";
+  setSelectedNote: (val: Note | "") => void;
 }
 
 interface Coordinates {
@@ -92,7 +99,15 @@ interface Coordinates {
 }
 
 const Dial: FunctionComponent<Props> = (props: Props) => {
-  const { type } = props;
+  const {
+    type,
+    selectedScale,
+    setSelectedScale,
+    selectedMode,
+    setSelectedMode,
+    selectedNote,
+    setSelectedNote,
+  } = props;
 
   const [selected, setSelected] = useState(false);
   const [grabbed, setGrabbed] = useState(false);
@@ -181,7 +196,16 @@ const Dial: FunctionComponent<Props> = (props: Props) => {
 
   return (
     <Root>
-      <Options type={type} angle={debouncedAngle}>
+      <Options
+        type={type}
+        angle={debouncedAngle}
+        selectedMode={selectedMode}
+        setSelectedMode={setSelectedMode}
+        selectedScale={selectedScale}
+        setSelectedScale={setSelectedScale}
+        selectedNote={selectedNote}
+        setSelectedNote={setSelectedNote}
+      >
         {selected ? (
           <OutlineHighlight>{renderDial}</OutlineHighlight>
         ) : (

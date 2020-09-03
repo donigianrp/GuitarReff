@@ -1,24 +1,16 @@
 import React, { FunctionComponent, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import {
-  BoardDisplayNote,
-  Note,
-  Scale,
-  ScaleName,
-  ModeName,
-} from "../../global";
+import { ModeName, Note, ScaleName } from "../../global";
 import { useTypedDispatch } from "../../store";
 import { FretboardModel } from "../../store/fretboard";
 import { RootState } from "../../store/state";
-import { initialNotes, scales, modeMap } from "../../store/static";
+import { initialNotes } from "../../store/static";
 import Dial from "./Dial/Dial";
+import Slider from "./Slider/Slider";
 
 const Root = styled.div`
-  // display: flex;
-  // justify-content: center;
   font-size: 1.5em;
-  // padding: 100px;
   width: 1200px;
 `;
 const NoteWrapper = styled.div`
@@ -90,9 +82,6 @@ const NoteStyleBorder = styled.div`
 
 const NoteGradient = styled.div`
   color: #fff;
-  // background: linear-gradient(to bottom, #eee 50%, #333);
-  // -webkit-background-clip: text;
-  // -webkit-text-fill-color: transparent;
 `;
 const HighlightedNoteStyle = styled.div`
   width: 60px;
@@ -130,10 +119,9 @@ const Button = styled.button`
 
 const Selector: FunctionComponent = (props) => {
   const dispatch = useTypedDispatch();
-  const [selectedScaleNote, setSelectedScaleNote] = useState<Note | "">("");
-  const [selectedScale, setSelectedScale] = useState<ScaleName | "">("");
-  const [selectedModeNote, setSelectedModeNote] = useState<Note | "">("");
   const [selectedMode, setSelectedMode] = useState<ModeName | "">("");
+  const [selectedScale, setSelectedScale] = useState<ScaleName | "">("");
+  const [selectedNote, setSelectedNote] = useState<Note | "">("");
   const { selectedNotes } = useSelector<RootState, FretboardModel>(
     (state) => state.fretboard
   );
@@ -141,11 +129,28 @@ const Selector: FunctionComponent = (props) => {
   return (
     <Root>
       <Wrapper>
-        <Dial type={"scales"} />
-        <Dial type={"modes"} />
+        <Dial
+          type={"scales"}
+          selectedMode={selectedMode}
+          setSelectedMode={setSelectedMode}
+          selectedScale={selectedScale}
+          setSelectedScale={setSelectedScale}
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
+        />
+        <Dial
+          type={"modes"}
+          selectedMode={selectedMode}
+          setSelectedMode={setSelectedMode}
+          selectedScale={selectedScale}
+          setSelectedScale={setSelectedScale}
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
+        />
+        <Slider selectedNote={selectedNote} setSelectedNote={setSelectedNote} />
       </Wrapper>
       <div>
-        <Wrapper>
+        {/* <Wrapper>
           <SectionWrapper>
             <div>Mode Note</div>
             <NoteSelectStyle
@@ -186,7 +191,7 @@ const Selector: FunctionComponent = (props) => {
               })}
             </NoteSelectStyle>
           </SectionWrapper>
-        </Wrapper>
+        </Wrapper> */}
         {/* <SectionWrapper>
           <div>Select Mode:</div>
           <Wrapper>

@@ -46,7 +46,7 @@ const modes: DialOption<ModeName>[] = [
   },
   {
     label: "Dorian",
-    bottom: 120,
+    bottom: 115,
     left: 50,
   },
   {
@@ -66,7 +66,7 @@ const modes: DialOption<ModeName>[] = [
   },
   {
     label: "Aeolian",
-    bottom: 120,
+    bottom: 115,
     left: 310,
   },
   {
@@ -84,7 +84,7 @@ const scales: DialOption<ScaleName>[] = [
   },
   {
     label: "Natural Major",
-    bottom: 140,
+    bottom: 130,
     left: 50,
   },
   {
@@ -99,7 +99,7 @@ const scales: DialOption<ScaleName>[] = [
   },
   {
     label: "Major Pentatonic",
-    bottom: 140,
+    bottom: 130,
     left: 308,
   },
   {
@@ -117,6 +117,8 @@ interface OptProps {
   setSelectedScale: (val: ScaleName | "") => void;
   selectedMode: ModeName | "";
   setSelectedMode: (val: ModeName | "") => void;
+  selectedNote: Note | "";
+  setSelectedNote: (val: Note | "") => void;
   disabled?: boolean;
 }
 
@@ -129,20 +131,27 @@ const Scales: FunctionComponent<OptProps> = React.memo((props: OptProps) => {
     setSelectedScale,
     selectedMode,
     setSelectedMode,
+    selectedNote,
+    setSelectedNote,
   } = props;
   const dispatch = useTypedDispatch();
   useEffect(() => {
-    if (selectedScale) {
+    if (selectedScale && selectedNote) {
       const scale = {
         name: selectedScale,
-        note: "A" as Note,
+        note: selectedNote,
       };
       dispatch({
         type: "SELECT_SCALE",
         payload: scale,
       });
+    } else if (!selectedNote) {
+      dispatch({
+        type: "SELECT_SCALE",
+        payload: null,
+      });
     }
-  }, [selectedScale]);
+  }, [selectedScale, selectedNote]);
 
   useEffect(() => {
     if (angle >= min(0) || angle <= max(0)) {
@@ -187,17 +196,26 @@ const Scales: FunctionComponent<OptProps> = React.memo((props: OptProps) => {
   );
 });
 const Modes: FunctionComponent<OptProps> = React.memo((props: OptProps) => {
-  const { angle, min, max, selectedMode, setSelectedMode, disabled } = props;
+  const {
+    angle,
+    min,
+    max,
+    selectedMode,
+    setSelectedMode,
+    selectedNote,
+    setSelectedNote,
+    disabled,
+  } = props;
   const dispatch = useTypedDispatch();
   const { selectedScale } = useSelector<RootState, FretboardModel>(
     (state) => state.fretboard
   );
   // const [selectedMode, setSelectedMode] = useState<ModeName | "">("");
   useEffect(() => {
-    if (selectedMode && selectedScale) {
+    if (selectedMode && selectedScale && selectedNote) {
       const mode: Mode = {
         name: selectedMode,
-        note: "A" as Note,
+        note: selectedNote,
         scale: selectedScale.name,
       };
       dispatch({
@@ -205,7 +223,7 @@ const Modes: FunctionComponent<OptProps> = React.memo((props: OptProps) => {
         payload: mode,
       });
     }
-  }, [selectedMode, selectedScale]);
+  }, [selectedMode, selectedScale, selectedNote]);
 
   useEffect(() => {
     if (angle >= min(0) || angle <= max(0)) {
@@ -257,11 +275,28 @@ interface Props {
   angle: number;
   scale?: ScaleName | "";
   mode?: ModeName | "";
+  selectedScale: ScaleName | "";
+  setSelectedScale: (val: ScaleName | "") => void;
+  selectedMode: ModeName | "";
+  setSelectedMode: (val: ModeName | "") => void;
+  selectedNote: Note | "";
+  setSelectedNote: (val: Note | "") => void;
 }
 const Options: FunctionComponent<Props> = (props: Props) => {
-  const { children, type, angle } = props;
-  const [selectedMode, setSelectedMode] = useState<ModeName | "">("");
-  const [selectedScale, setSelectedScale] = useState<ScaleName | "">("");
+  const {
+    children,
+    type,
+    angle,
+    selectedScale,
+    setSelectedScale,
+    selectedMode,
+    setSelectedMode,
+    selectedNote,
+    setSelectedNote,
+  } = props;
+  // const [selectedMode, setSelectedMode] = useState<ModeName | "">("");
+  // const [selectedScale, setSelectedScale] = useState<ScaleName | "">("");
+  // const [selectedNote, setSelectedNote] = useState<Note | "">("");
 
   const increment =
     type === "scales" ? 360 / (scales.length + 1) : 360 / (modes.length + 1);
@@ -270,7 +305,6 @@ const Options: FunctionComponent<Props> = (props: Props) => {
     return idx === 0 ? 360 - half : idx * increment - half;
   };
   const max = (idx: number) => idx * increment + half;
-  console.log("scale", selectedScale);
 
   return (
     <Root>
@@ -283,6 +317,8 @@ const Options: FunctionComponent<Props> = (props: Props) => {
           setSelectedMode={setSelectedMode}
           selectedScale={selectedScale}
           setSelectedScale={setSelectedScale}
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
         />
       ) : (
         <Modes
@@ -293,6 +329,8 @@ const Options: FunctionComponent<Props> = (props: Props) => {
           setSelectedMode={setSelectedMode}
           selectedScale={selectedScale}
           setSelectedScale={setSelectedScale}
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
           disabled={!!selectedScale}
         />
       )}
