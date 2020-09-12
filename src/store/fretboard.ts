@@ -6,6 +6,8 @@ import {
   Mode,
   Note,
   Scale,
+  ScaleName,
+  ModeName,
 } from "../global";
 import {
   boardDisplay,
@@ -15,6 +17,7 @@ import {
   updateBoardDisplay,
 } from "./helpers";
 import { standardTuning } from "./static";
+import { useTypedDispatch } from ".";
 
 // Model
 export interface FretboardModel {
@@ -23,7 +26,10 @@ export interface FretboardModel {
   fretboard: Fretboard;
   selectedNotes: Note[];
   selectedScale: Scale | null;
+  selectedScaleName: ScaleName | "none";
   selectedMode: Mode | null;
+  selectedModeName: ModeName | "all";
+  selectedRoot: Note | null;
 }
 
 // Initial State
@@ -33,19 +39,11 @@ const initialState: FretboardModel = {
   fretboard: fretboard(standardTuning),
   selectedNotes: [],
   selectedScale: null,
+  selectedScaleName: "none",
   selectedMode: null,
+  selectedModeName: "all",
+  selectedRoot: null,
 };
-
-// // Actions
-// export interface FretboardActions {
-//   updateTuning: ActionFunction1<BoardDisplayNote[], Action<BoardDisplayNote[]>>;
-//   selectNote: ActionFunction1<Note, Action<Note>>;
-// }
-
-// export const fretboardActions: FretboardActions = {
-//   updateTuning: createAction<BoardDisplayNote[]>("UPDATE_TUNING"),
-//   selectNote: createAction<Note>("SELECT_NOTE"),
-// };
 
 // Reducer
 interface Payload<T> {
@@ -66,8 +64,20 @@ export type FretboardDispatchParam =
       payload: Scale | null;
     }
   | {
+      type: "SELECT_SCALE_NAME";
+      payload: ScaleName | "none";
+    }
+  | {
       type: "SELECT_MODE";
       payload: Mode | null;
+    }
+  | {
+      type: "SELECT_MODE_NAME";
+      payload: ModeName | "all";
+    }
+  | {
+      type: "SELECT_ROOT";
+      payload: Note | null;
     };
 
 export const fretboardReducer = handleActions<FretboardModel, any>(
@@ -136,8 +146,6 @@ export const fretboardReducer = handleActions<FretboardModel, any>(
       }
     },
     SELECT_MODE: (state, action: Payload<Mode | null>) => {
-      // console.log(modeBoardDisplay(state.boardDisplay, action.payload));
-
       if (action.payload) {
         return {
           ...state,
@@ -150,6 +158,36 @@ export const fretboardReducer = handleActions<FretboardModel, any>(
           selectedMode: null,
           boardDisplay: boardDisplay(standardTuning),
         };
+      }
+    },
+    SELECT_ROOT: (state, action: Payload<Note | null>) => {
+      if (action.payload) {
+        return {
+          ...state,
+          selectedRoot: action.payload,
+        };
+      } else {
+        return state;
+      }
+    },
+    SELECT_SCALE_NAME: (state, action: Payload<ScaleName | "none">) => {
+      if (action.payload) {
+        return {
+          ...state,
+          selectedScaleName: action.payload,
+        };
+      } else {
+        return state;
+      }
+    },
+    SELECT_MODE_NAME: (state, action: Payload<ModeName | "all">) => {
+      if (action.payload) {
+        return {
+          ...state,
+          selectedModeName: action.payload,
+        };
+      } else {
+        return state;
       }
     },
   },

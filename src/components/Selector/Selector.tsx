@@ -1,11 +1,9 @@
 import React, { FunctionComponent, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { ModeName, Note, ScaleName } from "../../global";
-import { useTypedDispatch } from "../../store";
+import { Note } from "../../global";
 import { FretboardModel } from "../../store/fretboard";
 import { RootState } from "../../store/state";
-import { initialNotes } from "../../store/static";
 import Dial from "./Dial/Dial";
 import Slider from "./Slider/Slider";
 
@@ -118,9 +116,6 @@ const Button = styled.button`
 `;
 
 const Selector: FunctionComponent = (props) => {
-  const dispatch = useTypedDispatch();
-  const [selectedMode, setSelectedMode] = useState<ModeName | "">("");
-  const [selectedScale, setSelectedScale] = useState<ScaleName | "">("");
   const [selectedNote, setSelectedNote] = useState<Note | "">("");
   const { selectedNotes } = useSelector<RootState, FretboardModel>(
     (state) => state.fretboard
@@ -129,24 +124,8 @@ const Selector: FunctionComponent = (props) => {
   return (
     <Root>
       <Wrapper>
-        <Dial
-          type={"scales"}
-          selectedMode={selectedMode}
-          setSelectedMode={setSelectedMode}
-          selectedScale={selectedScale}
-          setSelectedScale={setSelectedScale}
-          selectedNote={selectedNote}
-          setSelectedNote={setSelectedNote}
-        />
-        <Dial
-          type={"modes"}
-          selectedMode={selectedMode}
-          setSelectedMode={setSelectedMode}
-          selectedScale={selectedScale}
-          setSelectedScale={setSelectedScale}
-          selectedNote={selectedNote}
-          setSelectedNote={setSelectedNote}
-        />
+        <Dial type={"scales"} />
+        <Dial type={"modes"} />
         <Slider selectedNote={selectedNote} setSelectedNote={setSelectedNote} />
       </Wrapper>
       <div>

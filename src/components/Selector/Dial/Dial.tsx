@@ -1,33 +1,26 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { FretboardModel } from "../../../store/fretboard";
+import { RootState } from "../../../store/state";
+import DialMarker from "./DialMarker";
 import Options from "./Options/Options";
-import { useThrottle } from "../../../hooks/useThrottle";
-import { useDebounce } from "../../../hooks/useDebounce";
-import { ScaleName, ModeName, Note } from "../../../global";
 
 const Root = styled.div`
   display: flex;
 `;
 
-const Outline = styled.div`
+const Outline = styled.div.attrs((props: { selected: boolean }) => ({
+  selected: props.selected,
+}))`
   height: 200px;
   width: 200px;
   border-radius: 100px;
-  background-color: #97a6ff;
+  background-color: ${(props) => (props.selected ? "#3553ff" : "#97a6ff")};
+  box-shadow: ${(props) => (props.selected ? "0 0px 10px #4863ff" : "none")};
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const OutlineHighlight = styled.div`
-  height: 200px;
-  width: 200px;
-  border-radius: 100px;
-  background: #3553ff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 0px 10px #4863ff;
 `;
 
 const Bevel = styled.div`
@@ -49,168 +42,59 @@ const Center = styled.div`
   position: relative;
 `;
 
-const MarkerContainer = styled.div.attrs((props: { angle: number }) => ({
-  angle: props.angle || 0,
-}))`
-  height: 176px;
-  width: 176px;
-  border-radius: 88px;
-  background: transparent;
-  position: relative;
-  transform: rotate(${(props) => props.angle}deg);
-`;
-
-const MarkerGrab = styled.div`
-  position: absolute;
-  bottom: 0px;
-  left: 48px;
-  background: radial-gradient(#fff 2%, #444);
-  height: 80px;
-  width: 80px;
-  border-radius: 40px;
-  cursor: grab;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 5px;
-`;
-
-const Marker = styled.div`
-  background-color: #fff;
-  height: 10px;
-  width: 10px;
-  border-radius: 5px;
-  background: transparent;
-`;
-
 interface Props {
   type: "scales" | "modes";
-  selectedScale: ScaleName | "";
-  setSelectedScale: (val: ScaleName | "") => void;
-  selectedMode: ModeName | "";
-  setSelectedMode: (val: ModeName | "") => void;
-  selectedNote: Note | "";
-  setSelectedNote: (val: Note | "") => void;
-}
-
-interface Coordinates {
-  x: number;
-  y: number;
 }
 
 const Dial: FunctionComponent<Props> = (props: Props) => {
-  const {
-    type,
-    selectedScale,
-    setSelectedScale,
-    selectedMode,
-    setSelectedMode,
-    selectedNote,
-    setSelectedNote,
-  } = props;
+  const { type } = props;
+  const RADIUS = 88;
 
   const [selected, setSelected] = useState(false);
-  const [grabbed, setGrabbed] = useState(false);
-  const [angle, setAngle] = useState(0);
-  const throttledAngle = useThrottle(angle, 200);
-  const debouncedAngle = useDebounce(angle, 50);
 
+  const [angle, setAngle] = useState(0);
   const dialRef = useRef<HTMLDivElement>(null);
-  const [pivot, setPivot] = useState<Coordinates>({
-    x: 0,
-    y: 0,
-  });
-  const [origin, setOrigin] = useState<Coordinates>({
-    x: 0,
-    y: 0,
-  });
+  const [center, setCenter] = useState({ x: 0, y: 0 });
+  const [disabled, setDisabled] = useState(false);
+
+  const { selectedScaleName } = useSelector<RootState, FretboardModel>(
+    (state) => state.fretboard
+  );
 
   useEffect(() => {
-    if (dialRef.current) {
+    if (dialRef.current && center.x === 0) {
       const { x, y } = dialRef.current.getBoundingClientRect();
 
-      setPivot({
-        x: x + 88,
-        y: y + 88,
-      });
-      setOrigin({
-        x: x + 88,
-        y: y + 176,
+      setCenter({
+        x: x + RADIUS,
+        y: y + RADIUS,
       });
     }
   }, []);
 
-  const renderDial = (() => {
-    return (
-      <Bevel>
-        <Center ref={dialRef}>
-          <MarkerContainer
-            angle={angle}
-            onMouseEnter={() => {
-              setSelected(true);
-            }}
-            onMouseLeave={() => {
-              setSelected(false);
-            }}
-            onMouseMove={(e) => {
-              if (!grabbed) {
-                return;
-              }
-
-              const sideC =
-                ((pivot.x - e.pageX) ** 2 + (pivot.y - e.pageY) ** 2) ** 0.5;
-
-              const sideB = 88;
-              const sideA =
-                ((origin.x - e.pageX) ** 2 + (origin.y - e.pageY) ** 2) ** 0.5;
-
-              const takeCos =
-                (sideB ** 2 + sideC ** 2 - sideA ** 2) / (2 * sideB * sideC);
-
-              const angleA = Math.acos(takeCos);
-              if (e.pageX > pivot.x) {
-                setAngle(360 - (angleA * 180) / Math.PI);
-              } else {
-                setAngle((angleA * 180) / Math.PI);
-              }
-            }}
-          >
-            <MarkerGrab
-              onMouseDown={(e) => {
-                setGrabbed(true);
-              }}
-              onMouseUp={(e) => {
-                setGrabbed(false);
-              }}
-              onMouseLeave={() => {
-                setGrabbed(false);
-              }}
-            >
-              <Marker />
-            </MarkerGrab>
-          </MarkerContainer>
-        </Center>
-      </Bevel>
-    );
-  })();
-
+  useEffect(() => {
+    if (type === "modes" && selectedScaleName === "none") {
+      setDisabled(true);
+    } else if (disabled) {
+      setDisabled(false);
+    }
+  }, [selectedScaleName]);
   return (
     <Root>
-      <Options
-        type={type}
-        angle={debouncedAngle}
-        selectedMode={selectedMode}
-        setSelectedMode={setSelectedMode}
-        selectedScale={selectedScale}
-        setSelectedScale={setSelectedScale}
-        selectedNote={selectedNote}
-        setSelectedNote={setSelectedNote}
-      >
-        {selected ? (
-          <OutlineHighlight>{renderDial}</OutlineHighlight>
-        ) : (
-          <Outline>{renderDial}</Outline>
-        )}
+      <Options type={type} angle={angle} setAngle={setAngle}>
+        <Outline selected={selected}>
+          <Bevel>
+            <Center ref={dialRef}>
+              <DialMarker
+                setSelected={setSelected}
+                center={center}
+                angle={angle}
+                setAngle={setAngle}
+                disabled={disabled}
+              />
+            </Center>
+          </Bevel>
+        </Outline>
       </Options>
     </Root>
   );

@@ -32,7 +32,7 @@ type Modes = {
   [key in ModeName]: number;
 };
 
-export const modeMap: Modes = {
+export const modes: Modes = {
   Ionian: 0,
   Dorian: 1,
   Phrygian: 2,

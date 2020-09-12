@@ -9,7 +9,7 @@ import {
   BoardDisplayString,
   ScaleName,
 } from "../global";
-import { initialNotes, modeMap } from "./static";
+import { initialNotes, modes } from "./static";
 import { scales } from "./static";
 
 export const boardDisplay = (
@@ -84,12 +84,12 @@ export const modeNotes = (mode: Mode): BoardDisplayNote[] => {
     note: mode.note,
   });
   let modeOrdered: BoardDisplayNote[] = [];
-  if (modeMap[mode.name] === 0) {
+  if (modes[mode.name] === 0) {
     modeOrdered = orderedNotes;
   } else {
     modeOrdered = [
-      ...orderedNotes.slice(modeMap[mode.name]),
-      ...orderedNotes.slice(0, modeMap[mode.name]),
+      ...orderedNotes.slice(modes[mode.name]),
+      ...orderedNotes.slice(0, modes[mode.name]),
     ];
   }
   return modeOrdered;
