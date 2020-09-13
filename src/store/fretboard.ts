@@ -4,10 +4,10 @@ import {
   BoardDisplayNote,
   Fretboard,
   Mode,
+  ModeName,
   Note,
   Scale,
   ScaleName,
-  ModeName,
 } from "../global";
 import {
   boardDisplay,
@@ -17,7 +17,6 @@ import {
   updateBoardDisplay,
 } from "./helpers";
 import { standardTuning } from "./static";
-import { useTypedDispatch } from ".";
 
 // Model
 export interface FretboardModel {
@@ -29,7 +28,7 @@ export interface FretboardModel {
   selectedScaleName: ScaleName | "none";
   selectedMode: Mode | null;
   selectedModeName: ModeName | "all";
-  selectedRoot: Note | null;
+  selectedRoot: Note | "none";
 }
 
 // Initial State
@@ -42,7 +41,7 @@ const initialState: FretboardModel = {
   selectedScaleName: "none",
   selectedMode: null,
   selectedModeName: "all",
-  selectedRoot: null,
+  selectedRoot: "none",
 };
 
 // Reducer
@@ -77,7 +76,7 @@ export type FretboardDispatchParam =
     }
   | {
       type: "SELECT_ROOT";
-      payload: Note | null;
+      payload: Note | "none";
     };
 
 export const fretboardReducer = handleActions<FretboardModel, any>(
@@ -132,7 +131,7 @@ export const fretboardReducer = handleActions<FretboardModel, any>(
         );
         return {
           ...state,
-          selectedNotes: updatedNotes,
+          selectedNotes: [],
           selectedScale: action.payload,
           boardDisplay: updatedDisplay,
         };
@@ -149,18 +148,20 @@ export const fretboardReducer = handleActions<FretboardModel, any>(
       if (action.payload) {
         return {
           ...state,
+          selectedNotes: [],
           selectedMode: action.payload,
           boardDisplay: modeBoardDisplay(state.boardDisplay, action.payload),
         };
       } else {
         return {
           ...state,
+          selectedNotes: [],
           selectedMode: null,
           boardDisplay: boardDisplay(standardTuning),
         };
       }
     },
-    SELECT_ROOT: (state, action: Payload<Note | null>) => {
+    SELECT_ROOT: (state, action: Payload<Note | "none">) => {
       if (action.payload) {
         return {
           ...state,

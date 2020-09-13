@@ -13,7 +13,11 @@ export const useActions = () => {
   >((state) => state.fretboard);
   return {
     setSelectedScale: (payload: ScaleName | "none") => {
-      if (payload !== "none" && selectedRoot && selectedModeName !== "all") {
+      if (
+        payload !== "none" &&
+        selectedRoot !== "none" &&
+        selectedModeName !== "all"
+      ) {
         const mode = {
           scale: payload,
           name: selectedModeName,
@@ -23,7 +27,7 @@ export const useActions = () => {
           type: "SELECT_MODE",
           payload: mode,
         });
-      } else if (payload !== "none" && selectedRoot) {
+      } else if (payload !== "none" && selectedRoot !== "none") {
         const scale = {
           name: payload,
           note: selectedRoot,
@@ -40,7 +44,11 @@ export const useActions = () => {
       }
     },
     setSelectedMode: (payload: ModeName | "all") => {
-      if (payload !== "all" && selectedScaleName !== "none" && selectedRoot) {
+      if (
+        payload !== "all" &&
+        selectedScaleName !== "none" &&
+        selectedRoot !== "none"
+      ) {
         const mode = {
           scale: selectedScaleName,
           name: payload,
@@ -53,7 +61,7 @@ export const useActions = () => {
       } else if (
         payload === "all" &&
         selectedScaleName !== "none" &&
-        selectedRoot
+        selectedRoot !== "none"
       ) {
         const scale = {
           name: selectedScaleName,
@@ -63,6 +71,35 @@ export const useActions = () => {
           type: "SELECT_SCALE",
           payload: scale,
         });
+      }
+    },
+    handleRootChange: (payload: Note | "none") => {
+      if (payload === "none") {
+        dispatch({
+          type: "SELECT_SCALE",
+          payload: null,
+        });
+      } else if (selectedScaleName !== "none") {
+        if (selectedModeName !== "all") {
+          const mode = {
+            scale: selectedScaleName,
+            name: selectedModeName,
+            note: payload,
+          };
+          dispatch({
+            type: "SELECT_MODE",
+            payload: mode,
+          });
+        } else {
+          const scale = {
+            name: selectedScaleName,
+            note: payload,
+          };
+          dispatch({
+            type: "SELECT_SCALE",
+            payload: scale,
+          });
+        }
       }
     },
     setSelectedScaleName: (payload: ScaleName | "none") =>
@@ -75,10 +112,11 @@ export const useActions = () => {
         type: "SELECT_MODE_NAME",
         payload,
       }),
-    setSelectedRoot: (payload: Note | null) =>
+    setSelectedRoot: (payload: Note | "none") => {
       dispatch({
         type: "SELECT_ROOT",
         payload,
-      }),
+      });
+    },
   };
 };

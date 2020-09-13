@@ -7,6 +7,7 @@ import { useActions } from "../../../hooks/useActions";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/state";
 import { FretboardModel } from "../../../store/fretboard";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const SliderContainer = styled.div`
   height: 280px;
@@ -74,23 +75,26 @@ interface Props {
 }
 
 const Slider: FunctionComponent<Props> = (props: Props) => {
-  const { selectedNote, setSelectedNote } = props;
-  const dispatch = useTypedDispatch();
   const [increment, setIncrement] = useState(-1);
 
   const { selectedRoot } = useSelector<RootState, FretboardModel>(
     (state) => state.fretboard
   );
 
-  const { setSelectedRoot } = useActions();
+  const { setSelectedRoot, handleRootChange } = useActions();
+  const debouncedRoot = useDebounce(selectedRoot, 200);
 
   useEffect(() => {
     if (increment >= 0) {
       setSelectedRoot(initialNotes[increment].note);
     } else {
-      setSelectedRoot(null);
+      setSelectedRoot("none");
     }
   }, [increment]);
+
+  useEffect(() => {
+    handleRootChange(debouncedRoot as Note | "none");
+  }, [debouncedRoot]);
 
   return (
     <>
@@ -111,7 +115,9 @@ const Slider: FunctionComponent<Props> = (props: Props) => {
       </SliderContainer>
       <NoteWrapper>
         <NoteLabel>G#</NoteLabel>
-        <CurrentNote>{selectedRoot ? selectedRoot : "Off"}</CurrentNote>
+        <CurrentNote>
+          {selectedRoot !== "none" ? selectedRoot : "Off"}
+        </CurrentNote>
         <NoteLabel>A</NoteLabel>
       </NoteWrapper>
     </>

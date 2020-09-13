@@ -1,9 +1,11 @@
 import React, { FunctionComponent, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { Note } from "../../global";
+import { BoardDisplayNote, Note } from "../../global";
+import { useTypedDispatch } from "../../store";
 import { FretboardModel } from "../../store/fretboard";
 import { RootState } from "../../store/state";
+import { initialNotes } from "../../store/static";
 import Dial from "./Dial/Dial";
 import Slider from "./Slider/Slider";
 
@@ -97,6 +99,13 @@ const SectionWrapper = styled.div`
   margin: 20px;
 `;
 
+const PanelWrapper = styled.div`
+  display: flex;
+  background: #1b1b1b;
+  border-radius: 10px;
+  box-shadow: 2px 2px 2px #222;
+  padding: 10px 0;
+`;
 const Wrapper = styled.div`
   display: flex;
 `;
@@ -116,6 +125,8 @@ const Button = styled.button`
 `;
 
 const Selector: FunctionComponent = (props) => {
+  const dispatch = useTypedDispatch();
+
   const [selectedNote, setSelectedNote] = useState<Note | "">("");
   const { selectedNotes } = useSelector<RootState, FretboardModel>(
     (state) => state.fretboard
@@ -123,167 +134,14 @@ const Selector: FunctionComponent = (props) => {
 
   return (
     <Root>
-      <Wrapper>
+      <PanelWrapper>
         <Dial type={"scales"} />
         <Dial type={"modes"} />
         <Slider selectedNote={selectedNote} setSelectedNote={setSelectedNote} />
-      </Wrapper>
+      </PanelWrapper>
       <div>
-        {/* <Wrapper>
-          <SectionWrapper>
-            <div>Mode Note</div>
-            <NoteSelectStyle
-              onChange={(e) => {
-                if (e.target.value) {
-                  setSelectedModeNote(e.target.value as Note);
-                }
-              }}
-            >
-              <option value={""} label={"Select root:"}></option>
-
-              {initialNotes.map((noteDetails) => {
-                return (
-                  <option key={noteDetails.note} value={noteDetails.note}>
-                    {noteDetails.note}
-                  </option>
-                );
-              })}
-            </NoteSelectStyle>
-          </SectionWrapper>
-          <SectionWrapper>
-            <div>Scale Note</div>
-            <NoteSelectStyle
-              onChange={(e) => {
-                if (e.target.value) {
-                  setSelectedScaleNote(e.target.value as Note);
-                }
-              }}
-            >
-              <option value={""} label={"Select root:"}></option>
-
-              {initialNotes.map((noteDetails) => {
-                return (
-                  <option key={noteDetails.note} value={noteDetails.note}>
-                    {noteDetails.note}
-                  </option>
-                );
-              })}
-            </NoteSelectStyle>
-          </SectionWrapper>
-        </Wrapper> */}
-        {/* <SectionWrapper>
-          <div>Select Mode:</div>
-          <Wrapper>
-            <ScaleSelectStyle
-              onChange={(e) => {
-                if (e.target.value) {
-                  setSelectedMode(e.target.value as ModeName);
-                }
-              }}
-            >
-              <option value="" label={"Select mode:"} />
-              {Object.keys(modeMap).map((modeName) => {
-                return (
-                  <option key={modeName} value={modeName}>
-                    {modeName}
-                  </option>
-                );
-              })}
-            </ScaleSelectStyle>
-            <NoteSelectStyle
-              onChange={(e) => {
-                if (e.target.value) {
-                  setSelectedModeNote(e.target.value as Note);
-                }
-              }}
-            >
-              <option value={""} label={"Select root:"}></option>
-
-              {initialNotes.map((noteDetails) => {
-                return (
-                  <option key={noteDetails.note} value={noteDetails.note}>
-                    {noteDetails.note}
-                  </option>
-                );
-              })}
-            </NoteSelectStyle>
-            <Button
-              disabled={!selectedMode || !selectedModeNote}
-              onClick={() => {
-                if (selectedMode && selectedModeNote) {
-                  const mode = {
-                    name: selectedMode,
-                    note: selectedModeNote,
-                  };
-                  dispatch({
-                    type: "SELECT_MODE",
-                    payload: mode,
-                  });
-                }
-              }}
-            >
-              Filter
-            </Button>
-          </Wrapper>
-        </SectionWrapper>
         <SectionWrapper>
-          <div>Select Scale:</div>
-          <Wrapper>
-            <ScaleSelectStyle
-              onChange={(e) => {
-                if (e.target.value) {
-                  setSelectedScale(e.target.value as ScaleName);
-                }
-              }}
-            >
-              <option value="" label={"Select scale:"} />
-              {Object.keys(scales).map((scaleName) => {
-                return (
-                  <option key={scaleName} value={scaleName}>
-                    {scaleName}
-                  </option>
-                );
-              })}
-            </ScaleSelectStyle>
-            <NoteSelectStyle
-              onChange={(e) => {
-                if (e.target.value) {
-                  setSelectedScaleNote(e.target.value as Note);
-                }
-              }}
-            >
-              <option value={""} label={"Select root:"}></option>
-
-              {initialNotes.map((noteDetails) => {
-                return (
-                  <option key={noteDetails.note} value={noteDetails.note}>
-                    {noteDetails.note}
-                  </option>
-                );
-              })}
-            </NoteSelectStyle>
-            <Button
-              disabled={!selectedScale || !selectedScaleNote}
-              onClick={() => {
-                if (selectedScale && selectedScaleNote) {
-                  const scale = {
-                    name: selectedScale,
-                    note: selectedScaleNote,
-                  };
-                  dispatch({
-                    type: "SELECT_SCALE",
-                    payload: scale,
-                  });
-                }
-              }}
-            >
-              Filter
-            </Button>
-          </Wrapper>
-        </SectionWrapper> */}
-        <SectionWrapper>
-          {/* <div>Select Note:</div> */}
-          {/* <NotesWrapper>
+          <NotesWrapper>
             {initialNotes.map((noteDetails: BoardDisplayNote) => {
               return (
                 <NoteContainer key={noteDetails.note}>
@@ -327,7 +185,7 @@ const Selector: FunctionComponent = (props) => {
                 </NoteContainer>
               );
             })}
-          </NotesWrapper> */}
+          </NotesWrapper>
         </SectionWrapper>
       </div>
     </Root>
