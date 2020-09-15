@@ -1,13 +1,12 @@
-import React, { FunctionComponent, useState, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Note } from "../../../global";
-import { useTypedDispatch } from "../../../store";
-import { initialNotes } from "../../../store/static";
 import { useActions } from "../../../hooks/useActions";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store/state";
-import { FretboardModel } from "../../../store/fretboard";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { FretboardModel } from "../../../store/fretboard";
+import { RootState } from "../../../store/state";
+import { initialNotes } from "../../../store/static";
 
 const SliderContainer = styled.div`
   height: 280px;
@@ -69,13 +68,11 @@ const CurrentNote = styled.div`
   width: 80px;
 `;
 
-interface Props {
-  selectedNote: Note | "";
-  setSelectedNote: (val: Note | "") => void;
-}
+interface Props {}
 
 const Slider: FunctionComponent<Props> = (props: Props) => {
   const [increment, setIncrement] = useState(-1);
+  const sliderRef = useRef<HTMLInputElement>(null);
 
   const { selectedRoot } = useSelector<RootState, FretboardModel>(
     (state) => state.fretboard
@@ -101,6 +98,7 @@ const Slider: FunctionComponent<Props> = (props: Props) => {
       <SliderContainer>
         <NoteSlider>
           <input
+            ref={sliderRef}
             className="slider"
             type="range"
             min="-1"

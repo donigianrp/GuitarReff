@@ -1,9 +1,8 @@
-import { ScaleName, ModeName, Note } from "../global";
 import { useSelector } from "react-redux";
-import { FunctionComponent } from "react";
+import { ModeName, Note, ScaleName } from "../global";
 import { useTypedDispatch } from "../store";
-import { RootState } from "../store/state";
 import { FretboardModel } from "../store/fretboard";
+import { RootState } from "../store/state";
 
 export const useActions = () => {
   const dispatch = useTypedDispatch();
@@ -12,6 +11,12 @@ export const useActions = () => {
     FretboardModel
   >((state) => state.fretboard);
   return {
+    setSelectedNote: (payload: Note) => {
+      dispatch({
+        type: "SELECT_NOTE",
+        payload,
+      });
+    },
     setSelectedScale: (payload: ScaleName | "none") => {
       if (
         payload !== "none" &&
