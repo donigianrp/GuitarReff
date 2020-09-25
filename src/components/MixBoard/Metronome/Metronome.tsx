@@ -1,9 +1,6 @@
 import React, { FunctionComponent } from "react";
 import styled from "styled-components";
-import Dial from "./Dial/Dial";
-import Metronome from "./Metronome/Metronome";
-import Notes from "./Notes/Notes";
-import Slider from "./Slider/Slider";
+import BPMDisplay from "./BPMDisplay";
 
 const Root = styled.div`
   margin-top: 40px;
@@ -30,24 +27,12 @@ const MidPanelWrapper = styled.div`
   padding: 10px 0;
 `;
 
-const MixBoard: FunctionComponent = (props) => {
+const Metronome: FunctionComponent = (props) => {
   return (
-    <>
-      <Metronome />
-      <Root>
-        <MixBoardContainer>
-          <PanelWrapper>
-            <Dial type={"scales"} />
-            <Dial type={"modes"} />
-            <Slider />
-          </PanelWrapper>
-          <MidPanelWrapper>
-            <Notes />
-          </MidPanelWrapper>
-        </MixBoardContainer>
-      </Root>
-    </>
+    <Root>
+      <BPMDisplay />
+    </Root>
   );
 };
 
-export default MixBoard;
+export default Metronome;
