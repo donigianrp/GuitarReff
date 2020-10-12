@@ -10,10 +10,14 @@ import { initialNotes } from "../../../store/static";
 
 const SliderContainer = styled.div`
   height: 280px;
-  width: 150px;
+  width: 50px;
+  position: relative;
 `;
 
 const NoteSlider = styled.div`
+  position: absolute;
+  top: 0;
+  left: -110px;
   transform: rotate(270deg);
   width: 250px;
   margin-top: 130px;

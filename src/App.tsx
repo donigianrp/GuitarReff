@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import Main from "./components/Main/Main";
 import MixBoard from "./components/MixBoard/MixBoard";
+import NavBar from "./components/NavBar/NavBar";
 
-const Root = styled.div`
+const Body = styled.div`
   font: normal 14px Open Sans;
   padding: 30px;
   position: relative;
@@ -16,16 +17,22 @@ const Title = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const App: React.FC = () => {
   return (
-    <Root>
-      <div>
-        <Main />
-        <MixBoard />
-      </div>
-    </Root>
+    <>
+      <NavBar />
+      <Body>
+        <Wrapper>
+          <Main />
+          <MixBoard />
+        </Wrapper>
+      </Body>
+    </>
   );
 };
 

@@ -1,39 +1,32 @@
 import React, { FunctionComponent } from "react";
 import styled from "styled-components";
 import Dial from "./Dial/Dial";
-import Metronome from "./Metronome/Metronome";
+import Metronome from "./Metronome/MetronomeContainer";
 import Notes from "./Notes/Notes";
 import Slider from "./Slider/Slider";
 
 const Root = styled.div`
   margin-top: 40px;
   font-size: 1.5em;
-  min-width: 1260px;
-  display: flex;
-  justify-content: center;
-`;
-const MixBoardContainer = styled.div`
-  width: 1264px;
-`;
-
-const PanelWrapper = styled.div`
+  width: 1260px;
   display: flex;
   background: #1b1b1b;
-  border-radius: 10px 10px 0 0;
-  box-shadow: 2px 2px 2px #222;
+`;
+const MixBoardContainer = styled.div`
+  width: 1000px;
+`;
+const PanelWrapper = styled.div`
+  display: flex;
+  border-radius: 10px 0 0 0;
   padding: 10px 0;
 `;
 const MidPanelWrapper = styled.div`
   display: flex;
-  background: #1b1b1b;
-  box-shadow: 2px 2px 2px #222;
   padding: 10px 0;
 `;
-
 const MixBoard: FunctionComponent = (props) => {
   return (
     <>
-      <Metronome />
       <Root>
         <MixBoardContainer>
           <PanelWrapper>
@@ -45,6 +38,7 @@ const MixBoard: FunctionComponent = (props) => {
             <Notes />
           </MidPanelWrapper>
         </MixBoardContainer>
+        <Metronome />
       </Root>
     </>
   );

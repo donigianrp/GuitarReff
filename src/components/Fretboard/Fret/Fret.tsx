@@ -4,13 +4,11 @@ import styled from "styled-components";
 import { FretboardModel } from "../../../store/fretboard";
 import { RootState } from "../../../store/state";
 import BoardSegment from "./BoardSegment/BoardSegment";
-import FretBar from "./FretBar/FretBar";
 import Strings from "./Strings/Strings";
 
 const Wrapper = styled.div`
   display: flex;
 `;
-// flex-direction: column;
 
 const FretLabel = styled.div`
   display: flex;
@@ -20,16 +18,19 @@ const FretLabel = styled.div`
   margin-bottom: 10px;
 `;
 
+const FretBar = styled.div.attrs((props: { bottom: boolean }) => ({
+  bottom: props.bottom,
+}))`
+  position: absolute;
+  top: ${(props) => (props.bottom ? "-2px" : "0px")};
+  height: ${(props) => (props.bottom ? "304px" : "300px")};
+  width: 3px;
+  background: #ccc;
+`;
+
 const FretComponentsWrapper = styled.div`
   position: relative;
   border-top: 2px solid #ccc;
-`;
-
-const Bottom = styled.div`
-  height: 304px;
-  width: 3px;
-  background: #ccc;
-  margin-top: 37px;
 `;
 
 interface Props {
@@ -46,14 +47,18 @@ const Fret: FunctionComponent<Props> = (props: Props) => {
   return (
     <Wrapper>
       <div>
-        <FretLabel>{fretPosition}</FretLabel>
+        {/* <FretLabel>{fretPosition}</FretLabel> */}
         <FretComponentsWrapper>
           <Strings fretboard={boardDisplay} fretPosition={fretPosition} />
           <BoardSegment boardMarkers={markerAmount} />
-          <FretBar />
+          <FretBar bottom={false} />
         </FretComponentsWrapper>
       </div>
-      {fretPosition === 22 && <Bottom />}
+      {fretPosition === 22 && (
+        <FretComponentsWrapper>
+          <FretBar bottom={true} />
+        </FretComponentsWrapper>
+      )}
     </Wrapper>
   );
 };
