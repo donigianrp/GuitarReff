@@ -1,3 +1,9 @@
+// import { useMetronomeActions } from "../../../hooks/useMetronomeActions";
+// import { useTypedDispatch } from "../../../store";
+// const dispatch = useTypedDispatch();
+// const { updateCurrentQtrNote } = useMetronomeActions();
+import { store } from "../../../index";
+
 export class Metronome {
   audioContext: AudioContext | null;
   notesInQueue: { note: number; time: number }[];
@@ -61,6 +67,11 @@ export class Metronome {
         this.audioContext.currentTime + this.scheduleAheadTime
       ) {
         this.scheduleNote(this.currentQuarterNote, this.nextNoteTime);
+        store.dispatch({
+          type: "UPDATE_CURRENT_QTR_NOTE",
+          payload: this.currentQuarterNote,
+        });
+
         this.nextNote();
       }
   }

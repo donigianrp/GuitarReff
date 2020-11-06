@@ -7,7 +7,7 @@ const NoteGradient = styled.div`
 const NoteStyle = styled.div.attrs((props: { selected: boolean }) => ({
   selected: props.selected,
 }))`
-  height: 62px;
+  height: 48px;
   background: linear-gradient(315deg, #222 1%, #888);
   border-radius: 2px;
   width: 100%;
@@ -23,8 +23,8 @@ const Outline = styled.div.attrs((props: { selected: boolean }) => ({
   selected: props.selected,
 }))`
   margin: 0 5px;
-  width: 60px;
-  height: 62px;
+  width: 46px;
+  height: 48px;
   border-radius: 5px;
   display: flex;
   justify-content: center;

@@ -1,10 +1,13 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { frequencies } from "../../../store/static";
-import { Metronome } from "./Metronome";
-import play from "../../../static/play.png";
 import pause from "../../../static/pause.png";
+import play from "../../../static/play.png";
+import { MetronomeModel } from "../../../store/metronome";
+import { RootState } from "../../../store/state";
 import DynamicButton from "../Components/DynamicButton";
+import Dial from "./Dial/Dial";
+import { Metronome } from "./Metronome";
 
 const Root = styled.div`
   padding: 10px;
@@ -55,18 +58,16 @@ const MetronomeContainer: FunctionComponent = (props) => {
   const [bpm, setBpm] = useState(120);
   const [metronome, setMetronome] = useState(new Metronome());
 
+  const { currentQtrNote } = useSelector<RootState, MetronomeModel>(
+    (state) => state.metronome
+  );
+
   useEffect(() => {
     if (isPlaying) {
       metronome.stop();
       setMetronome(new Metronome(bpm));
     }
   }, [bpm]);
-
-  useEffect(() => {
-    if (isPlaying) {
-      metronome.start();
-    }
-  }, [metronome]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updatedBpm = Number(event.target.value);
@@ -79,7 +80,10 @@ const MetronomeContainer: FunctionComponent = (props) => {
 
   return (
     <Root>
-      <CurrentBPM value={bpm} onChange={handleChange} />
+      <Dial />
+      <Dial />
+      {/* <MetronomeClass /> */}
+      {/* <CurrentBPM value={bpm} onChange={handleChange} />
       <Control
         onClick={() => {
           setIsPlaying(!isPlaying);
@@ -88,40 +92,34 @@ const MetronomeContainer: FunctionComponent = (props) => {
       >
         {isPlaying ? <Pause src={pause} /> : <Play src={play} />}
       </Control>
+      <div>{currentQtrNote}</div>
       <ControlWrapper>
         <DynamicButton
           handleClick={() => {
             setBpm(bpm - 5);
           }}
-          // selected={false}
-          // setSelected={setSe}
           buttonText={"-5"}
         />
         <DynamicButton
           handleClick={() => {
             setBpm(bpm - 1);
           }}
-          // selected={false}
-          // setSelected={setSe}
           buttonText={"-1"}
         />
+        <DynamicButton handleClick={() => {}} buttonText={">II"} />
         <DynamicButton
           handleClick={() => {
             setBpm(bpm + 1);
           }}
-          // selected={false}
-          // setSelected={setSe}
           buttonText={"+1"}
         />
         <DynamicButton
           handleClick={() => {
             setBpm(bpm + 5);
           }}
-          // selected={false}
-          // setSelected={setSe}
           buttonText={"+5"}
         />
-      </ControlWrapper>
+      </ControlWrapper> */}
     </Root>
   );
 };

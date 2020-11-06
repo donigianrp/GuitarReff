@@ -25,6 +25,7 @@ const Notes: FunctionComponent<Props> = (props: Props) => {
       {initialNotes.map((noteDetails: BoardDisplayNote) => {
         return (
           <StaticButton
+            key={noteDetails.note}
             handleClick={() => setSelectedNote(noteDetails.note)}
             selected={selectedNotes.includes(noteDetails.note)}
             buttonText={noteDetails.note}

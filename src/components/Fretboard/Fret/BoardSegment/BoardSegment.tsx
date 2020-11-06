@@ -8,7 +8,7 @@ const Root = styled.div`
 const MarkerWrapper = styled.div`
   position: absolute;
   top: 145px;
-  left: 22.5px;
+  left: 23.5px;
 `;
 
 const Marker = styled.div`
@@ -17,6 +17,7 @@ const Marker = styled.div`
   background-color: #daa520;
   border-radius: 30px;
 `;
+
 const MarkerTop = styled.div`
   width: 10px;
   height: 10px;
@@ -24,7 +25,7 @@ const MarkerTop = styled.div`
   border-radius: 30px;
   position: absolute;
   top: 94px;
-  left: 22.5px;
+  left: 23.5px;
 `;
 const MarkerBottom = styled.div`
   width: 10px;
@@ -33,7 +34,7 @@ const MarkerBottom = styled.div`
   border-radius: 30px;
   position: absolute;
   top: 196px;
-  left: 22.5px;
+  left: 23.5px;
 `;
 
 interface Props {

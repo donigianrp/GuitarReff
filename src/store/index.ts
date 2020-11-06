@@ -5,13 +5,15 @@ import { combineReducers } from "redux";
 import { RootState } from "./state";
 import { fretboardReducer, FretboardDispatchParam } from "../store/fretboard";
 import { useDispatch } from "react-redux";
+import { MetronomeDispatchParam, metronomeReducer } from "./metronome";
 
-type DispatchParams = FretboardDispatchParam;
+type DispatchParams = FretboardDispatchParam | MetronomeDispatchParam;
 type Dispatch = <TReturnType>(action: DispatchParams) => TReturnType;
 export const useTypedDispatch = () => useDispatch<Dispatch>();
 
 export const rootReducer = combineReducers<RootState>({
   fretboard: fretboardReducer,
+  metronome: metronomeReducer,
 });
 export function configureStore(initialState?: RootState): Store<RootState> {
   let middleware = applyMiddleware(logger);
