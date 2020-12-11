@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { FretboardModel } from "../../../../store/fretboard";
 import { RootState } from "../../../../store/state";
+import Options from "./Options/Options";
 
 const Root = styled.div`
   display: flex;
@@ -68,21 +69,21 @@ const Dial: FunctionComponent<Props> = (props: Props) => {
 
   return (
     <Root>
-      {/* <Options type={type} angle={angle} setAngle={setAngle}> */}
-      <Outline selected={selected}>
-        <Bevel>
-          <Center ref={dialRef}>
-            {/* <DialMarker
+      <Options>
+        <Outline selected={selected}>
+          <Bevel>
+            <Center ref={dialRef}>
+              {/* <DialMarker
               setSelected={setSelected}
               center={center}
               angle={angle}
               setAngle={setAngle}
               disabled={disabled}
             /> */}
-          </Center>
-        </Bevel>
-      </Outline>
-      {/* </Options> */}
+            </Center>
+          </Bevel>
+        </Outline>
+      </Options>
     </Root>
   );
 };

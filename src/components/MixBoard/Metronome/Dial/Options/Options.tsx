@@ -1,85 +1,63 @@
 import React, { FunctionComponent, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { DialOption, ModeName, ScaleName } from "../../../../../global";
-import { useActions } from "../../../../../hooks/useActions";
-import { useDebounce } from "../../../../../hooks/useDebounce";
+import { ModeName, ScaleName } from "../../../../../global";
 import { FretboardModel } from "../../../../../store/fretboard";
 import { RootState } from "../../../../../store/state";
 import { modes, scales } from "../../../../../store/static";
-import ModeOptions from "./ModeOptions";
-import ScaleOptions from "./ScaleOptions";
 
 const Root = styled.div`
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  position: relative;
+`;
+
+const Tick = styled.div.attrs((props: { total: number; current: number }) => ({
+  total: props.total || 0,
+  current: props.current || 0,
+}))`
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: -5px;
+  margin-top: -5px;
+  left: 50%;
+  top: 50%;
+  background: #000;
+  transform: rotate(${(props) => props.current * 30 - 140}deg) translate(100px);
+`;
+
+const DialContainer = styled.div`
+  width: 100%;
+  height: 200px;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  width: 400px;
-  height: 240px;
-  position: relative;
-  padding-bottom: 40px;
+  align-items: center;
 `;
 
-const Option = styled.p.attrs(
-  (props: { bottom: number; left: number; selected: boolean }) => ({
-    bottom: props.bottom || 0,
-    left: props.left || 0,
-    selected: props.selected || false,
-  })
-)`
-  position: absolute;
-  bottom: ${(props) => props.bottom}px;
-  left: ${(props) => props.left}px;
-  color: ${(props) => (props.selected ? "#3553ff" : "#fff")};
-  font-weight: ${(props) => (props.selected ? "600" : "400")};
-  font-size: 0.8rem;
-  width: 70px;
-`;
-
+// transform: rotate(${(props) => props.current}deg) translate(100px);
+// color: ${(props) => (props.selected ? "#3553ff" : "#fff")};
 interface Props {
   children?: any;
-  type: "scales" | "modes";
-  angle: number;
-  setAngle: (val: number) => void;
-  scale?: ScaleName | "";
-  mode?: ModeName | "";
 }
 const Options: FunctionComponent<Props> = (props: Props) => {
-  const { children, type, angle, setAngle } = props;
+  const { children } = props;
   const { selectedScaleName } = useSelector<RootState, FretboardModel>(
     (state) => state.fretboard
   );
 
-  useEffect(() => {
-    if (type === "modes" && selectedScaleName === "none") {
-      setAngle(0);
-    }
-  }, [selectedScaleName]);
-
-  const increment =
-    type === "scales"
-      ? 360 / (Object.keys(scales).length + 1)
-      : 360 / (Object.keys(modes).length + 1);
-  const half = increment / 2;
-  const min = (idx: number) => {
-    return idx === 0 ? 360 - half : idx * increment - half;
-  };
-  const max = (idx: number) => idx * increment + half;
-
   return (
-    <Root>
-      {type === "scales" ? (
-        <ScaleOptions angle={angle} min={min} max={max} />
-      ) : (
-        <ModeOptions
-          angle={angle}
-          min={min}
-          max={max}
-          disabled={selectedScaleName === "none"}
-        />
-      )}
-      {children}
-    </Root>
+    <>
+      <Root>
+        <Tick total={4} current={0} />
+        <Tick total={4} current={1} />
+        <Tick total={4} current={2} />
+        <Tick total={4} current={3} />
+        <DialContainer>{children}</DialContainer>
+      </Root>
+    </>
   );
 };
 
